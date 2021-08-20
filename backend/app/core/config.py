@@ -8,7 +8,7 @@ config = Config(".env")
 
 # project + app
 
-PROJECT_NAME = "APPAPI"
+PROJECT_NAME = "assistr"
 VERSION = "0.0.1"
 API_PREFIX = "/api"
 
