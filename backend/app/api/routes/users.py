@@ -7,6 +7,9 @@ from fastapi import APIRouter, Depends, Body, status, HTTPException
 
 from app.models.user import UserCreate, UserPublic
 
+# repositories
+from app.db.repositories.users import UsersRepository
+from app.api.dependencies.database import get_repository
 
 router = APIRouter()
 
@@ -17,24 +20,28 @@ async def get_all_users() -> List[UserPublic]:
         UserPublic(id="1", email="temp@temp.com", username="username1"),
         UserPublic(id="2", email="this@willbe.com", username="replaced"),
     ]
-
     return users
 
 
-@router.post("/", response_model=UserPublic, name="users:create-user")
+@router.post(
+    "/",
+    response_model=UserPublic,
+    name="users:create-user",
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_user(
-    new_user: UserCreate = Body(..., embed=True),
-    # user_repo / db connect goes here TODO
+    new_user: UserCreate = Body(..., embed=True),  # we pass in body of json
+    user_repo: UsersRepository = Depends(get_repository(UsersRepository)),
 ) -> UserPublic:
     """
     Creates a new user and returns a public model including access token (JWT)
     """
 
-    # register user (send CreateUser to db, receive UserInDB)
+    # register user (send UserCreate to db, receive UserInDB)
+
+    created_user = await user_repo.create_user(new_user=new_user)
 
     # create JWT and attach to UserPublic model
 
     # return public model
-    fakeuser = UserPublic(id=1, username="user", password="password")
-    user = fakeuser
-    return user
+    return created_user

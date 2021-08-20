@@ -2,15 +2,16 @@ from pydantic.networks import EmailStr
 from app.db.repositories.base import BaseRepository
 from app.models.user import UserCreate, UserUpdate, UserInDB
 
+
 CREATE_USER_QUERY = """
-    INSERT INTO users (name, email,salt, password)
-    VALUES (:name,:email,:salt,:password)
-    RETURNING id, name, email, created_at,updated_at;
+    INSERT INTO users (username, email,salt, password)
+    VALUES (:username,:email,:salt,:password)
+    RETURNING id, username, email, salt, password, created_at, updated_at;
 """
 
 # don't use select *. bad.
 GET_USER_BY_EMAIL_QUERY = """
-    SELECT id, email,username, salt, password, created_at,updated_at
+    SELECT id, username,email, salt, password, created_at,updated_at
     FROM users
     WHERE email = :email;
 """

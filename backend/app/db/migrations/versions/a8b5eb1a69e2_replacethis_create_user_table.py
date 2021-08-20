@@ -52,6 +52,7 @@ def create_users_table() -> None:
         "users",
         sa.Column("id", sa.Integer, primary_key=True),
         # sa.Column("profile_id",ForeignKey(profile.id)),
+        sa.Column("username", sa.Text, unique=True),
         sa.Column("email", sa.Text, unique=True, nullable=False, index=True),
         sa.Column("salt", sa.Text, nullable=False),
         sa.Column("password", sa.Text, nullable=False),

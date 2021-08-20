@@ -1,12 +1,13 @@
 # core to testing
+from starlette.status import HTTP_201_CREATED
 import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI, status
 from databases import Database
 
 
-# db repository
-from app.db.repositories import UsersRepository
+# db repositories
+from app.db.repositories.users import UsersRepository
 
 # models
 from app.models.user import UserCreate, UserInDB, UserPublic
@@ -41,6 +42,26 @@ class TestUserRoutes:
 
 class TestUserRegistration:
     async def test_valid_input_creates_user(
-        self, app: FastAPI, client: AsyncClient, db: Database
+        self, app: FastAPI, client: AsyncClient
     ) -> None:
-        assert True
+
+        # we will remove this out into conftest
+        test_user = UserCreate(
+            email="conf@test.com",
+            password="password",
+            username="conftest",
+        )
+
+        # create the json payload for the endpoint
+        payload = {"new_user": test_user.dict()}
+
+        # request the endpoint and get a response
+        res = await client.post(app.url_path_for("users:create-user"), json=payload)
+
+        # assert response is expected
+        assert res.status_code == HTTP_201_CREATED
+
+        # assert returned json is expected
+
+        # we will use the InDB model instead of the returned json
+        # need to query database / users repo instead TODO
