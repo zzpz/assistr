@@ -8,6 +8,7 @@ Create Date: 2021-08-20 06:14:56.762120
 from typing import Tuple
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.schema import ForeignKey
 
 
@@ -51,18 +52,38 @@ def create_users_table() -> None:
     op.create_table(
         "users",
         sa.Column("id", sa.Integer, primary_key=True),
-        # sa.Column("profile_id",ForeignKey(profile.id)),
-        sa.Column("username", sa.Text, unique=True),
+        # sa.Column("profile_id",ForeignKey(profile.id)), TODO
+        sa.Column("profile_id", sa.Integer, default=1),
         sa.Column("email", sa.Text, unique=True, nullable=False, index=True),
+        sa.Column("is_org", sa.Boolean, nullable=False, server_default="False"),
         sa.Column("salt", sa.Text, nullable=False),
         sa.Column("password", sa.Text, nullable=False),
+        # sa.Column("username", sa.Text, unique=True), # no usernames
         *timestamps(),  # this just unpacks the result of timestamps() function
+    )
+
+
+def create_posts_table() -> None:
+    """
+    creates a base posts table
+    """
+    op.create_table(
+        "posts",
+        sa.Column("id", sa.Integer, primary_key=True),
+        # sa.Column("poster_id,sa.Integer")
+        sa.Column("title", sa.Text, nullable=False, default="title"),
+        sa.Column("text", sa.Text, nullable=False, default="text"),
+        sa.Column("image", sa.Text, nullable=True),  # url to post 'image(s)'
+        sa.Column("details", sa.Text, nullable=False, default="we need details"),
+        *timestamps(),
     )
 
 
 def upgrade() -> None:
     create_users_table()
+    create_posts_table()
 
 
 def downgrade() -> None:
     op.drop_table("users")
+    op.drop_table("posts")

@@ -11,20 +11,21 @@ class UserBase(CoreModel):
     """
 
     email: Optional[EmailStr]
-    username: Optional[str]
-    # type
-    # verified
-    # etc
+    # username: Optional[str] #no usernames
+    is_org: bool = False  # for now only one account for org
 
 
 class UserCreate(CoreModel):
     """
-    This is the model that we use when we wish to create a new user. We expect email, password and a valid username.
+    This is the model that we use when we wish to create a new user. We expect email and password.
+
+    email
+    password
+
     """
 
     email: EmailStr
-    password: constr(min_length=7, max_length=100)  # constrains the length of pw
-    username: constr(min_length=3, regex="^[a-zA-Z0-9_-]+$")
+    password: constr(min_length=7, max_length=100)  # constrains the length of
     # uname may not be necessary we need to define login detail TODO
 
 
