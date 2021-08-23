@@ -10,8 +10,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class AuthService:
-    def hash_pw(self, *, plaintext_password: str) -> UserPasswordUpdate:
-        return UserPasswordUpdate(salt="salt", password="password")
+    def salt_and_hash_pw(self, *, plaintext_password: str) -> UserPasswordUpdate:
+        salt = self.generate_salt()
+        hashed = self.hash_password(password=plaintext_password, salt=salt)
+        return UserPasswordUpdate(salt=salt, password=hashed)
 
     def generate_salt(self) -> str:
         return bcrypt.gensalt().decode()

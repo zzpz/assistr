@@ -12,6 +12,9 @@ from app.db.repositories.users import UsersRepository
 from app.models.user import UserCreate, UserInDB, UserPublic
 from tests.conftest import test_user
 
+# services
+from app.services import auth_service
+
 # decorates all tests with this mark ( @pytest.mark.asyncio
 pytestmark = pytest.mark.asyncio
 
@@ -31,8 +34,8 @@ class TestUserRoutes:
         # response
         assert res.status_code != status.HTTP_404_NOT_FOUND
 
-        res = await client.post(app.url_path_for("users:create-user"))
         # repeat for all other endpoints
+        res = await client.post(app.url_path_for("users:create-user"))
         assert res.status_code != status.HTTP_404_NOT_FOUND
 
     async def test_invalid_input_fails(self, app: FastAPI, client: AsyncClient) -> None:
@@ -97,3 +100,30 @@ class TestUserRegistration:
         payload = {"new_user": test_user.dict(exclude={"created_at", "updated_at"})}
         res = await client.post(app.url_path_for("users:create-user"), json=payload)
         assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    async def test_users_saved_password_is_hashed_with_salt(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        test_user: UserInDB,
+        db: Database,
+    ) -> None:
+
+        # we've succesfully created a user (test_user)
+        user = test_user
+
+        # use db repository to get user by email (no routing - direct to db)
+        user_repo = UsersRepository(db)
+        user_in_db = await user_repo.get_user_by_email(email=user.email)
+        assert user_in_db is not None
+
+        # ensure user password is hashed and in db and salt exists
+        assert user_in_db.salt is not None and user_in_db.salt != "salt"
+        assert user_in_db.password != "password"
+
+        # verify password using auth service
+        assert auth_service.verify_password(
+            password="password",
+            salt=user_in_db.salt,
+            hashed_pw=user_in_db.password,
+        )

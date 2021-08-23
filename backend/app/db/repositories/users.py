@@ -7,6 +7,9 @@ from fastapi import HTTPException, status
 # repositories
 from app.db.repositories.base import BaseRepository
 
+# auth
+from app.services import auth_service
+
 # from app.db.repositoris.profiles import ProfilesRepository
 
 # models
@@ -37,8 +40,8 @@ class UsersRepository(BaseRepository):
         Standard repository intialise + auth_service + profiles_repo available
         """
         super().__init__(db)
-        # self.auth_service = auth_service
-        # self.profiles_repo = ProfilesRepository(db)
+        self.auth_service = auth_service
+        # self.profiles_repo = ProfilesRepository(db) TODO
 
     async def get_user_by_email(self, *, email: EmailStr) -> UserInDB:
         """
@@ -72,15 +75,15 @@ class UsersRepository(BaseRepository):
                 detail="That email is alredy taken. Login or try another.",
             )
 
-        # hash password using auth service (UserPasswordUpdate model returned)
-        # hashed_pw = self.auth.service.create_salt_and_hash_pw(
-        # plaintext_pw = new_user.password)
-        hashed_pw = UserPasswordUpdate(password="password", salt="salt")  # TODO
+        # UserPasswordUpdate model with password and salt using auth service
+        hashed_pw = self.auth_service.salt_and_hash_pw(
+            plaintext_password=new_user.password
+        )
 
-        # replace in the UserCreate model
+        # copy and replace in the UserCreate model
         new_user_hashed_pw = new_user.copy(update=hashed_pw.dict())
 
-        # create user
+        # create user in database
         query_vals = new_user_hashed_pw.dict()
         created_user = await self.db.fetch_one(
             query=CREATE_USER_QUERY, values=query_vals
