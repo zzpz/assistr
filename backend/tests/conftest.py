@@ -25,6 +25,11 @@ from databases import Database
 import alembic
 from alembic.config import Config
 
+# Repositories
+from app.db.repositories.users import UsersRepository
+
+# Models
+from app.models.user import UserCreate, UserInDB
 
 # CORE: all tests need this
 @pytest.fixture(scope="session")  # exists for duration of testing session
@@ -61,6 +66,7 @@ def db(app: FastAPI) -> Database:
     return app.state._db
 
 
+# CORE
 @pytest.fixture
 async def client(app: FastAPI) -> AsyncClient:
     """
@@ -73,3 +79,30 @@ async def client(app: FastAPI) -> AsyncClient:
             headers={"Content-Type": "application/json"},
         ) as client:
             yield client
+
+
+# USERS - creates a test_user that exists throughout life of testing
+@pytest.fixture
+async def test_user(db: Database) -> UserInDB:
+    test_user = UserCreate(
+        email="conf@test.com",
+        password="password",
+        username="conftest",
+        superflous="value doesn't exist in UserCreate",
+    )
+
+    user_repo = UsersRepository(db)
+
+    # database persists for duration of the testing session
+    existing_user = await user_repo.get_user_by_email(email=test_user.email)
+    if existing_user:
+        return existing_user
+    # else
+
+    return await user_repo.create_user(new_user=test_user)
+
+
+# POSTS - creates a test_post that exists throughout life of testing
+@pytest.fixture
+async def test_post(db: Database) -> None:
+    return None

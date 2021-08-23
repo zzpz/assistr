@@ -1,5 +1,4 @@
 # core to testing
-from starlette.status import HTTP_201_CREATED
 import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI, status
@@ -11,6 +10,7 @@ from app.db.repositories.users import UsersRepository
 
 # models
 from app.models.user import UserCreate, UserInDB, UserPublic
+from tests.conftest import test_user
 
 # decorates all tests with this mark ( @pytest.mark.asyncio
 pytestmark = pytest.mark.asyncio
@@ -42,39 +42,43 @@ class TestUserRoutes:
 
 class TestUserRegistration:
     async def test_valid_input_creates_user(
-        self, app: FastAPI, client: AsyncClient, db: Database
+        self,
+        app: FastAPI,  # see conftest
+        client: AsyncClient,  # see conftest
+        db: Database,  # see conftest
+        test_user: UserInDB,  # see conftest, this is a persisting test user
     ) -> None:
         # we want to access the database without routing
         user_repo = UsersRepository(db)
 
         # we will remove this out into conftest
-        test_user = UserCreate(
-            email="conf@test.com",
+        local_test_user = UserCreate(
+            email="test@test.com",
             password="password",
             username="conftest",
             superflous="not used here",
         )
 
         # this query is not exposed publicly as a route
-        user_in_db = await user_repo.get_user_by_email(email=test_user.email)
+        user_in_db = await user_repo.get_user_by_email(email=local_test_user.email)
 
         # make sure they don't exist
         assert user_in_db is None
 
         # send post request to create and ensure is successful
         # create the json payload for the endpoint
-        payload = {"new_user": test_user.dict()}
+        payload = {"new_user": local_test_user.dict()}
 
         # request the endpoint and get a response
         res = await client.post(app.url_path_for("users:create-user"), json=payload)
 
         # assert response is expected
-        assert res.status_code == HTTP_201_CREATED
+        assert res.status_code == status.HTTP_201_CREATED
 
         # ensure now exists in db
-        user_in_db = await user_repo.get_user_by_email(email=test_user.email)
+        user_in_db = await user_repo.get_user_by_email(email=local_test_user.email)
         assert user_in_db is not None
-        assert user_in_db.email == test_user.email
+        assert user_in_db.email == local_test_user.email
 
         # assert returned json response is equal to user in database
         # tests if we modify it before we send it we don't modify anything incorrectly.
@@ -84,3 +88,12 @@ class TestUserRegistration:
         assert returned_user == user_in_db.dict(exclude={"password", "salt"})
 
         # a UserPublic is the same as a UserInDB but with less values
+
+        ######
+        # USING CONFTEST USER (user already exists --> created in conftest)
+        ######
+        assert test_user.email == "conf@test.com"
+        # test creating with existing email throws a 400
+        payload = {"new_user": test_user.dict(exclude={"created_at", "updated_at"})}
+        res = await client.post(app.url_path_for("users:create-user"), json=payload)
+        assert res.status_code == status.HTTP_400_BAD_REQUEST
