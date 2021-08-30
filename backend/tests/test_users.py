@@ -60,6 +60,7 @@ class TestUserRegistration:
             password="password",
             username="conftest",
             superflous="not used here",
+            additional_data="nope",
         )
 
         # this query is not exposed publicly as a route
@@ -75,7 +76,7 @@ class TestUserRegistration:
         # request the endpoint and get a response
         res = await client.post(app.url_path_for("users:create-user"), json=payload)
 
-        # assert response is expected
+        # assert response is as expected
         assert res.status_code == status.HTTP_201_CREATED
 
         # ensure now exists in db
@@ -87,18 +88,30 @@ class TestUserRegistration:
         # tests if we modify it before we send it we don't modify anything incorrectly.
 
         # create two dicts of the values in the two models and compare dicts
-        returned_user = UserPublic(**res.json()).dict(exclude={""})
+        returned_user = UserPublic(**res.json()).dict(
+            exclude={"profile", "access_token"}
+            # profile and accesstoken not known prior to creation
+        )
         assert returned_user == user_in_db.dict(exclude={"password", "salt"})
-
         # a UserPublic is the same as a UserInDB but with less values
 
-        ######
-        # USING CONFTEST USER (user already exists --> created in conftest)
-        ######
+    async def test_invalid_input_fails(
+        self,
+        app: FastAPI,  # see conftest
+        client: AsyncClient,  # see conftest
+        db: Database,  # see conftest
+        test_user: UserInDB,  # see conftest, this is a persisting test user
+    ):
+
         assert test_user.email == "conf@test.com"
         # test creating with existing email throws a 400
-        payload = {"new_user": test_user.dict(exclude={"created_at", "updated_at"})}
+
+        payload = {
+            "new_user": {"email": test_user.email, "password": "400processablebutBAD"}
+        }
         res = await client.post(app.url_path_for("users:create-user"), json=payload)
+
+        # we raise HTTPException in repository create:user
         assert res.status_code == status.HTTP_400_BAD_REQUEST
 
     async def test_users_saved_password_is_hashed_with_salt(
