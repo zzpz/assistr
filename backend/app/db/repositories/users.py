@@ -1,3 +1,4 @@
+from typing import Optional
 from databases import Database
 
 # app
@@ -13,7 +14,7 @@ from app.services import auth_service
 # from app.db.repositoris.profiles import ProfilesRepository
 
 # models
-from app.models.user import UserCreate, UserInDB, UserPasswordUpdate
+from app.models.user import UserCreate, UserInDB, UserPasswordUpdate, UserPublic
 
 CREATE_USER_QUERY = """
     INSERT INTO users (email,salt, password)
@@ -63,7 +64,7 @@ class UsersRepository(BaseRepository):
 
     async def create_user(self, *, new_user: UserCreate) -> UserInDB:
         """
-        creates a user. Simplistic example. TODO - implement full suite
+        Creates a user.
         """
 
         # unique constraints exist on email -> confirm is not taken
@@ -89,10 +90,45 @@ class UsersRepository(BaseRepository):
             query=CREATE_USER_QUERY, values=query_vals
         )
 
-        # create profile
+        # create profile for the user
 
-        # unpack returned data and create a UserInDB Model
+        # attach profile
+        out = await self.populate_user(user=UserInDB(**created_user))
 
-        # attach profile and returned user data to UserInDB Model
+        # created_user = UserPublic(**created_user,profile=user_profile)
 
-        return UserInDB(**created_user)
+        return out
+
+    async def authenticate_user(
+        self, *, email: EmailStr, password: str
+    ) -> Optional[UserInDB]:
+        """
+        Authenticate supplied email + pass matches a user in database. Return None if not valid/DNE.
+        """
+
+        # check for existence using email
+        user_in_db = await self.get_user_by_email(email=email)
+
+        if not user_in_db:
+            return None
+
+        # user exists verify pass
+        if not self.auth_service.verify_password(
+            password=password, salt=user_in_db.salt, hashed_pw=user_in_db.password
+        ):
+            return None
+
+        return user_in_db
+
+    async def populate_user(self, *, user: UserInDB) -> UserInDB:
+        """
+        Takes a user and then appends profile details and returns the model.
+        """
+
+        pub_user = UserPublic(
+            **user.dict(),
+            # fetch and attach profile as well
+            profile="await self.profiles_repo.get_profile(user.id)"
+        )
+
+        return pub_user

@@ -21,11 +21,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = config(
 
 # JWT
 JWT_ALGORITHM = config("JWT_ALGORITHM", cast=str, default="HS256")
-
-JWT_AUDIENCE = config(
-    "JWT_AUDIENCE", cast=str, default="DEFAULTROUTE"
-)  # TODO: add auth route
-
+JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="assistr:auth")
 JWT_TOKEN_PREFIX = config("JWT_TOKEN_PREFIX", cast=str, default="Bearer")
 
 # DB

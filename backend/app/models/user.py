@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import EmailStr, constr
 from app.models.core import IDModelMixin, DateTimeModelMixin, CoreModel
+from app.models.token import AccessToken
 
 # NOTE: these are similar to CRUD -> one to Create, one to Update, one to 'find' in the database for either Read or Delete
 
@@ -13,6 +14,8 @@ class UserBase(CoreModel):
     email: Optional[EmailStr]
     # username: Optional[str] #no usernames
     is_org: bool = False  # for now only one account for org
+    # email_verified: bool = False #will include
+    # permissions?
 
 
 class UserCreate(CoreModel):
@@ -60,4 +63,12 @@ class UserInDB(IDModelMixin, DateTimeModelMixin, UserBase):
 
 
 class UserPublic(IDModelMixin, DateTimeModelMixin, UserBase):
-    pass  # we're deciding what we send out publicly here --> UserBase + mixins
+    """
+    Public model. This is what we return to a request. Optionally includes access_token and profile details.
+    """
+
+    # we're deciding what we send out publicly here --> UserBase + mixins
+
+    # + extra fields ( profile + authorisation)
+    access_token: Optional[AccessToken]
+    profile: Optional[str]  # profiles don't exist yet TODO

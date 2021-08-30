@@ -1,15 +1,20 @@
 from typing import List
 from fastapi import APIRouter, Depends, Body, status, HTTPException
-
-# we will be adding basic dependencies later TODO
-# e.g. current user, db connection, etc
+from fastapi.security import OAuth2PasswordRequestForm  # JWT
 
 
+# dependencies
+from app.api.dependencies.database import get_repository
+
+# models
+from app.models.token import AccessToken
 from app.models.user import UserCreate, UserPublic
 
 # repositories
 from app.db.repositories.users import UsersRepository
-from app.api.dependencies.database import get_repository
+
+# services
+from app.services import auth_service
 
 router = APIRouter()
 
@@ -43,5 +48,48 @@ async def create_user(
 
     # create JWT and attach to UserPublic model
 
-    # return public model
-    return created_user
+    access_token = AccessToken(
+        access_token=auth_service.create_access_token_for_user(user=created_user),
+        token_type="bearer",
+    )
+
+    # return a public model
+
+    # profile attachment done in repository
+
+    # return a public model
+    return created_user.copy(update={"access_token": access_token})
+
+
+@router.post(
+    "/login/token/", response_model=AccessToken, name="users:login-email-password"
+)
+async def login_user_with_email_and_password(
+    user_repo: UsersRepository = Depends(get_repository(UsersRepository)),  # db
+    form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm),
+) -> AccessToken:
+    """
+    Takes supplied form data containing 'username' and 'password' matching the OAuth2 standard, passes this to repo to authenticate exists and valid password.
+
+    Then generates and returns an accesstoken for that user.
+    """
+    user = await user_repo.authenticate_user(
+        email=form_data.username, password=form_data.password
+    )
+
+    if not user:
+        # those values you provided are not authorised
+        # specifically: auth was unsuccessful
+        # you should be using the bearer auth scheme - an fyi incase
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication was unsuccessful.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # else
+    access_token = AccessToken(
+        access_token=auth_service.create_access_token_for_user(user=user),
+        token_type="bearer",
+    )
+
+    return access_token
