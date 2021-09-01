@@ -1,6 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Optional, Type
 
+# http
+from fastapi import status
+from fastapi import HTTPException
+from pydantic import ValidationError
+
 # Cryptography library
 import bcrypt
 from passlib.context import CryptContext
@@ -18,7 +23,6 @@ from app.core.config import (
     SECRET_KEY,
     JWT_ALGORITHM,
     JWT_AUDIENCE,
-    JWT_TOKEN_PREFIX,
     ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 
@@ -90,3 +94,41 @@ class AuthService:
         )
 
         return access_token
+
+    def get_username_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
+        """
+        Decodes token, extracting payload with secret key using algorithm.
+
+        Returns payload's username attribute. (user's email)
+        """
+        try:
+
+            # decode the jwt string
+            payload = jwt.decode(
+                jwt=token,
+                key=str(secret_key),
+                audience=JWT_AUDIENCE,
+                algorithms=[JWT_ALGORITHM],
+            )
+
+            # unpack returned into a JWTPayload model
+            token_data = JWTPayload(**payload)
+        except (jwt.PyJWTError, ValidationError):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Could not validate token credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # return the 'sub' (email)
+        return token_data.sub
+
+
+# def decode(
+#     jwt: Union[str, bytes],
+#     key: Union[str, bytes, rsa.RSAPublicKey, rsa.RSAPrivateKey] = ...,
+#     verify: bool = ...,
+#     algorithms: Optional[Any] = ...,
+#     options: Optional[Mapping[Any, Any]] = ...,
+#     **kwargs: Any,
+# ) -> Dict[str, Any]: ...
