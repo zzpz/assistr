@@ -1,4 +1,4 @@
-"""replacethis create user table
+"""Create users and posts tables.
 
 Revision ID: a8b5eb1a69e2
 Revises: 
@@ -19,9 +19,27 @@ branch_labels = None
 depends_on = None
 
 
+# pgsql updated at trigger created by a function
+def create_updated_at_trigger() -> None:
+    op.execute(
+        """
+        CREATE OR REPLACE FUNCTION update_updated_at_column()
+            RETURNS TRIGGER AS
+        $$
+        BEGIN
+            NEW.updated_at = now();
+            RETURN NEW;
+        END;
+        $$ language 'plpgsql';
+        """
+    )
+
+
 def timestamps(indexed: bool = False) -> Tuple[sa.Column, sa.Column]:
     """
-    This is a way in which we can include repetitive columns across tables easily. We will create a way to update the updated_at column later. TODO
+    This is a way in which we can include repetitive columns across tables easily. We will create a way to update the updated_at column later.
+
+    updated at is updated via a trigger on the table which is created via a function.
     """
     return (
         sa.Column(
@@ -47,7 +65,7 @@ def timestamps(indexed: bool = False) -> Tuple[sa.Column, sa.Column]:
 
 def create_users_table() -> None:
     """
-    creates a base user table --> we will replace this as we get more complex functionality. Additional tables will be added as new migrations.
+    creates a base user table.
     """
     op.create_table(
         "users",
@@ -61,29 +79,55 @@ def create_users_table() -> None:
         # sa.Column("username", sa.Text, unique=True), # no usernames
         *timestamps(),  # this just unpacks the result of timestamps() function
     )
+    # create a trigger to perform 'updated at' on change of values
+    op.execute(
+        """
+        CREATE TRIGGER update_user_modtime
+            BEFORE UPDATE
+            ON users
+            FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
+        """
+    )
 
 
 def create_posts_table() -> None:
     """
-    creates a base posts table
+    creates a base posts table with update and created at
     """
     op.create_table(
         "posts",
         sa.Column("id", sa.Integer, primary_key=True),
-        # sa.Column("poster_id,sa.Integer")
-        sa.Column("title", sa.Text, nullable=False, default="title"),
-        sa.Column("text", sa.Text, nullable=False, default="text"),
-        sa.Column("image", sa.Text, nullable=True),  # url to post 'image(s)'
-        sa.Column("details", sa.Text, nullable=False, default="we need details"),
+        sa.Column("title", sa.Text, nullable=False, server_default="title"),
+        sa.Column("short_desc", sa.Text, nullable=False, server_default="short_desc"),
+        sa.Column("long_desc", sa.Text, nullable=False, server_default="long_desc"),
+        sa.Column(
+            "image", sa.Text, nullable=True, server_default="image"
+        ),  # url to post 'image(s)',
+        sa.Column("location", sa.Text, nullable=True, server_default="location"),
+        sa.Column("org", sa.Integer, sa.ForeignKey("users.id", ondelete="CASCADE")),
         *timestamps(),
+    )
+    # create a trigger to perform 'updated at' on modify of values
+    op.execute(
+        """
+        CREATE TRIGGER update_posts_modtime
+            BEFORE UPDATE
+            ON posts
+            FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
+        """
     )
 
 
 def upgrade() -> None:
+    create_updated_at_trigger()
     create_users_table()
     create_posts_table()
 
 
 def downgrade() -> None:
+    op.drop_table("posts")  # posts first as it has key constraints to users
     op.drop_table("users")
-    op.drop_table("posts")
+    # remove function to create updated at trigger
+    op.execute("DROP FUNCTION update_updated_at_column")
