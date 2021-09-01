@@ -19,7 +19,7 @@ from app.services import auth_service
 
 router = APIRouter()
 
-# name the router and you can use it across testing and db access
+# name the route and you can use it across testing and db access
 @router.get("/", response_model=List[UserPublic], name="users:list-all-users")
 async def get_all_users(
     current_user: UserInDB = Depends(get_current_user),
