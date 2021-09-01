@@ -105,7 +105,8 @@ def create_posts_table() -> None:
             "image", sa.Text, nullable=True, server_default="image"
         ),  # url to post 'image(s)',
         sa.Column("location", sa.Text, nullable=True, server_default="location"),
-        sa.Column("org", sa.Integer, sa.ForeignKey("users.id", ondelete="CASCADE")),
+        sa.Column("is_published", sa.Boolean, nullable=False),
+        sa.Column("org_id", sa.Integer, sa.ForeignKey("users.id", ondelete="CASCADE")),
         *timestamps(),
     )
     # create a trigger to perform 'updated at' on modify of values
