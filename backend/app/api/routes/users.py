@@ -5,10 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm  # JWT
 
 # dependencies
 from app.api.dependencies.database import get_repository
+from app.api.dependencies.auth import get_current_user
 
 # models
 from app.models.token import AccessToken
-from app.models.user import UserCreate, UserPublic
+from app.models.user import UserCreate, UserInDB, UserPublic
 
 # repositories
 from app.db.repositories.users import UsersRepository
@@ -20,7 +21,9 @@ router = APIRouter()
 
 # name the router and you can use it across testing and db access
 @router.get("/", response_model=List[UserPublic], name="users:list-all-users")
-async def get_all_users() -> List[UserPublic]:
+async def get_all_users(
+    current_user: UserInDB = Depends(get_current_user),
+) -> List[UserPublic]:
     users = [
         UserPublic(id="1", email="temp@temp.com", username="username1"),
         UserPublic(id="2", email="this@willbe.com", username="replaced"),
