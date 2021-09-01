@@ -1,6 +1,6 @@
 from typing import Optional, Union
-from pydantic import constr, EmailStr
-from app.models.core import IDModelMixin, DateTimeModelMixin, CoreModel
+
+from app.models.core import CoreModel, IDModelMixin, DateTimeModelMixin
 from app.models.user import UserPublic
 
 
@@ -9,12 +9,20 @@ class PostBase(CoreModel):
     The base post model. Consists of title, description, location - all forms of post models have this.
     """
 
-    title: Optional[str]  # not optional
-    short_desc: Optional[str]  # not optional
-    long_desc: Optional[str]  # not optional
-    location: Optional[str]  # optional? TODO -> geospatial or just strings?
-    image = Optional[str]  # image URL will need to be handled separately TODO
-    is_published: Optional[bool] = True  # ability to 'hold publishing until'
+    title: Optional[str] = "title"
+    short_desc: Optional[str] = "short desc"
+    long_desc: Optional[str] = "long_desc"
+    is_published: Optional[bool] = True
+    location: Optional[str] = "location"
+    image: Optional[str] = "image"
+
+
+#     title: Optional[str]  # not optional
+#     short_desc: Optional[str]  # not optional
+#     long_desc: Optional[str]  # not optional
+#     location: Optional[str]  # optional? TODO -> geospatial or just strings?
+#     image = Optional[str]  # image URL will need to be handled separately TODO
+#     is_published: bool = True  # ability to 'hold publishing until'
 
 
 class PostCreate(PostBase):
@@ -26,6 +34,7 @@ class PostCreate(PostBase):
 
     title: str
     short_desc: str
+    long_desc: str
     location: str
 
 
@@ -49,7 +58,6 @@ class PostInDB(IDModelMixin, DateTimeModelMixin, PostBase):
     org: int  # the owner of post
     title: str
     short_desc: str
-    long_desc: str
     location: str
 
 
@@ -58,6 +66,4 @@ class PostPublic(PostInDB):
     Returns post + owner. Owner is either int OR UserPublic model.
     """
 
-    org: Union[
-        int, UserPublic
-    ]  # for now we can return a public user as owner or just INT
+    org: Union[int, UserPublic]
