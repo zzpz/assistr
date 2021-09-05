@@ -10,7 +10,9 @@
 import warnings
 import os
 
-from alembic import config
+from app.core.config import JWT_TOKEN_PREFIX
+
+from typing import List, Callable
 
 # testing
 import pytest
@@ -30,6 +32,10 @@ from app.db.repositories.users import UsersRepository
 
 # Models
 from app.models.user import UserCreate, UserInDB
+
+# Services (auth)
+from app.services import auth_service
+
 
 # CORE: all tests need this
 @pytest.fixture(scope="session")  # exists for duration of testing session
@@ -106,3 +112,56 @@ async def test_user(db: Database) -> UserInDB:
 @pytest.fixture
 async def test_post(db: Database) -> None:
     return None
+
+
+# CORE - create an authorised client for test_user
+@pytest.fixture
+async def test_user_auth_client(
+    client: AsyncClient, test_user: UserInDB
+) -> AsyncClient:
+    """
+    Emulates a client with an authenticated user matching test_user. Used to test protected routes.
+    """
+    # create_access_token has default vars from app.config for all but user
+    access_token = auth_service.create_access_token_for_user(user=test_user)
+
+    # add additional auth headers to our client fixture
+    client.headers = {
+        **client.headers,
+        "Authorization": f"{JWT_TOKEN_PREFIX} {access_token}",
+    }
+
+    return client
+
+
+# CORE - create an authorised client for ANY user
+@pytest.fixture
+def create_auth_client(client: AsyncClient) -> Callable:
+    """
+    Takes client (fixture defined already, not necessary to provide).
+
+    Returns a callable function that takes UserInDB.
+
+    Returns a client having Authorization headers with that user's token.
+
+    e.g. authorized_client_with_this_user = create_auth_client(user=this_user)
+
+    functionally we are injecting client into the function for when the user is provided.
+    """
+
+    def _create_authorised_client(*, user: UserInDB) -> AsyncClient:
+        """
+        see user_auth_client
+        """
+        # create_access_token has default vars from app.config for all but user
+        access_token = auth_service.create_access_token_for_user(user=user)
+
+        # add additional auth headers to our client fixture
+        client.headers = {
+            **client.headers,
+            "Authorization": f"{JWT_TOKEN_PREFIX} {access_token}",
+        }
+
+        return client
+
+    return _create_authorised_client
