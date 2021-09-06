@@ -46,7 +46,7 @@ async def new_post():
 class TestPostRoutes:
     async def test_routes_exist(self, app: FastAPI, client: AsyncClient) -> None:
         # request
-        res = await client.get(app.url_path_for("posts:list-all-posts"))
+        res = await client.get(app.url_path_for("posts:list-posts"))
         # response
         assert res.status_code != status.HTTP_404_NOT_FOUND
 
@@ -101,7 +101,7 @@ class TestCreatePost:
         created_post = PostPublic(**res.json())
         assert res.status_code == 201
         assert created_post.title == new_post.title
-        assert created_post.org == test_user.id
+        assert created_post.org_id == test_user.id
 
     async def test_valid_input_creates_post_belonging_to_org(
         self,
@@ -135,4 +135,4 @@ class TestCreatePost:
         assert created_post.short_desc == new_post.short_desc
         assert created_post.long_desc == new_post.long_desc
         assert created_post.location == new_post.location
-        assert created_post.org == org_user.id
+        assert created_post.org_id == org_user.id
