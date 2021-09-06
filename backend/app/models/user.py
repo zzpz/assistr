@@ -29,7 +29,6 @@ class UserCreate(CoreModel):
 
     email: EmailStr
     password: constr(min_length=7, max_length=100)  # constrains the length of
-    # uname may not be necessary we need to define login detail TODO
 
 
 class UserUpdate(CoreModel):
@@ -38,8 +37,6 @@ class UserUpdate(CoreModel):
     """
 
     email: EmailStr
-    username: constr(min_length=3, regex="^[a-zA-Z0-9_-]+$")
-    # uname may not be necessary we need to define login detail TODO
 
 
 class UserPasswordUpdate(CoreModel):
