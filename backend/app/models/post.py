@@ -55,7 +55,7 @@ class PostInDB(IDModelMixin, DateTimeModelMixin, PostBase):
     MUST return title, desc,loc, org the rest is optional
     """
 
-    org: int  # the owner of post
+    org_id: int  # the owner of post
     title: str
     short_desc: str
     location: str
@@ -66,4 +66,4 @@ class PostPublic(PostInDB):
     Returns post + owner. Owner is either int OR UserPublic model.
     """
 
-    org: Union[int, UserPublic]
+    org_id: Union[int, UserPublic]
