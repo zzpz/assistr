@@ -1,4 +1,5 @@
 from typing import Optional
+from app.models.profile import ProfileCreate
 from databases import Database
 
 # app
@@ -7,6 +8,7 @@ from fastapi import HTTPException, status
 
 # repositories
 from app.db.repositories.base import BaseRepository
+from app.db.repositories.profiles import ProfilesRepository
 
 # auth
 from app.services import auth_service
@@ -20,6 +22,14 @@ CREATE_USER_QUERY = """
     INSERT INTO users (email,salt, password)
     VALUES (:email,:salt,:password)
     RETURNING id, profile_id, email, is_org, salt, password, created_at, updated_at;
+"""
+
+# enables creation of an organisation (functionally setting is_org flag to true and creating a org_profile)
+CREATE_ORG_QUERY = """
+    INSERT INTO users (email,salt, password, is_org)
+    VALUES (:email, :salt, :password:,:is_org)
+    RETURNING id, profile_id, email, is_org, salt, password, created_at,
+    updated_at;
 """
 
 # don't use select *. bad.
@@ -42,7 +52,7 @@ class UsersRepository(BaseRepository):
         """
         super().__init__(db)
         self.auth_service = auth_service
-        # self.profiles_repo = ProfilesRepository(db) TODO
+        self.profiles_repo = ProfilesRepository(db)  # see BaseRepositoy
 
     async def get_user_by_email(self, *, email: EmailStr) -> UserInDB:
         """
@@ -90,14 +100,15 @@ class UsersRepository(BaseRepository):
             query=CREATE_USER_QUERY, values=query_vals
         )
 
-        # create profile for the user
+        # create profile for the user (user_id + empty row)
+        await self.profiles_repo.create_profile_for_user(
+            profile_create=ProfileCreate(user_id=created_user["id"])
+        )
 
-        # attach profile
-        out = await self.populate_user(user=UserInDB(**created_user))
+        # attach profile to public user by pulling out from db
+        populated_user = await self.populate_user(user=UserInDB(**created_user))
 
-        # created_user = UserPublic(**created_user,profile=user_profile)
-
-        return out
+        return populated_user
 
     async def authenticate_user(
         self, *, email: EmailStr, password: str
@@ -128,7 +139,7 @@ class UsersRepository(BaseRepository):
         pub_user = UserPublic(
             **user.dict(),
             # fetch and attach profile as well
-            profile="await self.profiles_repo.get_profile(user.id)"
+            profile=await self.profiles_repo.get_profile_by_user_id(user_id=user.id),
         )
 
         return pub_user

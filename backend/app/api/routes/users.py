@@ -24,9 +24,11 @@ router = APIRouter()
 async def get_all_users(
     current_user: UserInDB = Depends(get_current_user),
 ) -> List[UserPublic]:
+
     users = [
         UserPublic(id="1", email="temp@temp.com", username="username1"),
         UserPublic(id="2", email="this@willbe.com", username="replaced"),
+        current_user,
     ]
     return users
 
