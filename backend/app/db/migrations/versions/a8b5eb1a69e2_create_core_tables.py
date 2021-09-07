@@ -1,4 +1,4 @@
-"""Create users and posts tables.
+"""Create users, posts, profiles tables
 
 Revision ID: a8b5eb1a69e2
 Revises: 
@@ -121,9 +121,35 @@ def create_posts_table() -> None:
     )
 
 
+def create_profiles_table() -> None:
+    op.create_table(
+        "profiles",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("first", sa.Text, nullable=True),
+        sa.Column("last", sa.Text, nullable=True),
+        sa.Column("phone", sa.Text, nullable=True),
+        sa.Column("bio", sa.Text, nullable=True, server_default=""),
+        sa.Column("image", sa.Text, nullable=True),
+        sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id", ondelete="CASCADE")),
+        sa.Column("org_name", sa.Text, nullable=True, server_default=""),
+        sa.Column("org_loc", sa.Text, nullable=True, server_default=""),
+        *timestamps(),
+    )
+    op.execute(
+        """
+        CREATE TRIGGER update_profiles_modtime
+            BEFORE UPDATE
+            ON profiles
+            FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
+        """
+    )
+
+
 def upgrade() -> None:
     create_updated_at_trigger()
     create_users_table()
+    create_profiles_table()
     create_posts_table()
 
 
