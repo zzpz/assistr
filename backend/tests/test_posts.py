@@ -1,5 +1,7 @@
 # core to testing
-from typing import Callable
+from typing import Callable, List
+
+from sqlalchemy.sql.expression import update
 import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI, status
@@ -12,6 +14,7 @@ from app.db.repositories.posts import PostsRepository
 # models
 from app.models.post import PostCreate, PostInDB, PostPublic, PostUpdate
 from app.models.user import UserInDB
+from tests.conftest import test_user1
 
 # services
 
@@ -147,7 +150,7 @@ class TestUpdatePost:
         app: FastAPI,
         create_auth_client: Callable,
         test_org3: UserInDB,  # org_user
-        test_post_with_interested: PostInDB,  # unowned post
+        org1_test_post: PostInDB,  # unowned post
     ) -> None:
         """
         Can't update other's posts.
@@ -157,16 +160,15 @@ class TestUpdatePost:
         o3_ac = create_auth_client(user=test_org3)
 
         # create json for the request
-        update = PostUpdate(is_published=True)
+        update = PostUpdate(title="title updated")
         valid_payload = update.json()
 
         # send the post_id as a path paramater in request
         res = await o3_ac.put(
             app.url_path_for(
                 "posts:update-post-by-id",
-                post_id=test_post_with_interested.id,
+                post_id=org1_test_post.id,
             ),
-            # post_update=PostUpdate(is_published=True),
             json=valid_payload,
         )
 
@@ -178,12 +180,100 @@ class TestUpdatePost:
         app: FastAPI,
         create_auth_client: Callable,
         test_org1: UserInDB,  # org_user
-        test_post_with_interested: PostInDB,  # already exists - owned by org
+        org1_test_post: PostInDB,  # already exists - owned by org
     ) -> None:
         """
         Only the organisation that created a post should be able to update it.
         """
-        assert True
+
+        ac = create_auth_client(user=test_org1)
+        valid_payload = {"post_update": {"short_desc": "short_updated"}}
+
+        res = await ac.put(
+            app.url_path_for(
+                "posts:update-post-by-id",
+                post_id=org1_test_post.id,
+            ),
+            json=valid_payload,
+        )
+
+        assert res.status_code == status.HTTP_200_OK
+
+        # convert json response to a model
+        updated_post = PostInDB(**res.json())
+        assert updated_post.id == org1_test_post.id  # same post
+
+        # assert value changed
+        assert getattr(updated_post, "short_desc") != getattr(
+            org1_test_post, "short_desc"
+        )
+        assert getattr(updated_post, "short_desc") == "short_updated"
+
+    # paramaters for test
+    @pytest.mark.parametrize(
+        "attrs_to_change, vals",
+        (
+            (["title"], ["updated title"]),
+            (["short_desc"], ["updated short"]),
+            (["long_desc"], ["updated long"]),
+            (["is_published"], [False]),  # unpublish (default True)
+            (["location"], ["updated location"]),
+            (["image"], ["update image"]),
+            (  # multiple values changing
+                ["title", "short_desc", "image"],  # attr
+                ["new title", "new short desc", "new image"],  # vals
+            ),
+        ),
+    )
+    async def test_update_post_with_valid_input(
+        self,
+        app: FastAPI,
+        create_auth_client: Callable,
+        test_org1: UserInDB,
+        org1_test_post: PostInDB,
+        attrs_to_change: List[str],
+        vals: List[str],
+    ) -> None:
+        """
+        Paramatereized test with assorted valid inputs for a given post owned by test_org1
+        """
+        # client
+        ac = create_auth_client(user=test_org1)
+        # generate json using dict comprehension
+        valid_payload = {
+            "post_update": {
+                attrs_to_change[i]: vals[i] for i in range(len(attrs_to_change))
+            }
+        }
+
+        # hit route with payload
+        res = await ac.put(
+            app.url_path_for(
+                "posts:update-post-by-id",
+                post_id=org1_test_post.id,
+            ),
+            json=valid_payload,
+        )
+
+        assert res.status_code == status.HTTP_200_OK
+
+        # convert json response to a model
+        updated_post = PostInDB(**res.json())
+        assert updated_post.id == org1_test_post.id  # same post
+
+        # assert values changed and expected val
+        for i in range(len(attrs_to_change)):
+            # assert changed
+            assert getattr(updated_post, attrs_to_change[i]) != getattr(
+                org1_test_post, attrs_to_change[i]
+            )
+            # assert expected value
+            assert getattr(updated_post, attrs_to_change[i]) == vals[i]
+
+        # assert only expected changed
+        for attr, val in updated_post.dict().items():
+            if attr not in attrs_to_change and attr != "updated_at":
+                assert getattr(org1_test_post, attr) == val
 
 
 class TestDeletePost:

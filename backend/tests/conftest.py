@@ -110,12 +110,6 @@ async def test_user(db: Database) -> UserInDB:
     return await user_repo.create_user(new_user=test_user)
 
 
-# POSTS - creates a test_post that exists throughout life of testing
-@pytest.fixture
-async def test_post(db: Database) -> None:
-    return None
-
-
 # CORE - create an authorised client for test_user
 @pytest.fixture
 async def test_user_auth_client(
@@ -240,6 +234,7 @@ async def test_org_list(
     return [test_org1, test_org2, test_org3]
 
 
+# POSTS + INTERESTED
 @pytest.fixture
 async def test_post_with_interested(
     db: Database, test_org1: UserInDB, test_user_list: List[UserInDB]
@@ -267,5 +262,30 @@ async def test_post_with_interested(
     for user in test_user_list:
         # repo.create_interested_in_post() TODO: implement interested in post
         interested = user.is_org
+
+    return created_post
+
+
+# POSTS - creates a test_post belonging to org1
+@pytest.fixture
+async def org1_test_post(db: Database, test_org1: UserInDB) -> PostInDB:
+    """
+    Post owned by testorg1 with interest from testuser1,2,3
+    """
+    # get repo's from db
+    post_repo = PostsRepository(db)
+
+    # make a post with test_org1 as owner
+    local_new_post = PostCreate(
+        title="org1 test post",
+        short_desc="org1 short desc",
+        long_desc="org1 long desc",
+        location="org1 location",
+    )
+
+    # create post in repo
+    created_post = await post_repo.create_post(
+        new_post=local_new_post, requesting_user=test_org1
+    )
 
     return created_post
