@@ -154,6 +154,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    op.drop_table("profiles")  # profiles before as it has key constraints
     op.drop_table("posts")  # posts first as it has key constraints to users
     op.drop_table("users")
     # remove function to create updated at trigger
