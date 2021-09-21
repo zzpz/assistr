@@ -55,7 +55,7 @@ class TestPostRoutes:
 
         res = await client.get(app.url_path_for("posts:update-post-by-id", post_id=1))
         assert res.status_code != status.HTTP_404_NOT_FOUND
-        # res = await client.get(app.url_path_for("posts:delete-post"))
+        res = await client.get(app.url_path_for("posts:delete-post-by-id", post_id=1))
         # assert res.status_code != status.HTTP_404_NOT_FOUND
 
         # repeat for all other endpoints
