@@ -45,6 +45,13 @@ UPDATE_POST_BY_ID_QUERY = """
     RETURNING id, org_id, title, short_desc, long_desc, image, location, is_published, created_at, updated_at
 """
 
+DELETE_POST_BY_ID_QUERY = """
+    DELETE
+    FROM posts
+    WHERE id = :id
+    RETURNING id
+"""
+
 
 class PostsRepository(BaseRepository):
     """
@@ -114,7 +121,9 @@ class PostsRepository(BaseRepository):
 
         return PostInDB(**updated_post)
 
-    async def get_post_by_id(self, *, post_id: int, requesting_user: UserInDB) -> None:
+    async def get_post_by_id(
+        self, *, post_id: int, requesting_user: UserInDB
+    ) -> PostInDB:
         """
         Retrieve a post given its ID and requesting user.
         """
@@ -127,3 +136,19 @@ class PostsRepository(BaseRepository):
             return None
 
         return PostInDB(**post)
+
+    async def delete_post(self, *, post: PostInDB) -> int:
+        """
+        Delete a post given its id.
+
+        User auth dealt with at route / application level
+        """
+
+        deleted_post_id = await self.db.execute(
+            query=DELETE_POST_BY_ID_QUERY, values={"id": post.id}
+        )
+
+        if not deleted_post_id:
+            return None
+
+        return deleted_post_id

@@ -14,7 +14,6 @@ from app.db.repositories.posts import PostsRepository
 # models
 from app.models.post import PostCreate, PostInDB, PostPublic, PostUpdate
 from app.models.user import UserInDB
-from tests.conftest import test_user1
 
 # services
 
@@ -279,20 +278,64 @@ class TestUpdatePost:
 class TestDeletePost:
     async def test_delete_unowned_post(
         self,
+        app: FastAPI,
         create_auth_client: Callable,
         test_org2: UserInDB,
-        test_post_with_interested: PostInDB,  # org1 owned post
+        org1_test_post: PostInDB,  # org1 owned post
+        db: Database,
     ) -> None:
         """
         Can't delete other's posts.
         """
+
+        ac = create_auth_client(user=test_org2)
+        posts_repo = PostsRepository(db)
+
+        res = await ac.delete(
+            app.url_path_for(
+                "posts:delete-post-by-id",
+                post_id=org1_test_post.id,
+            )
+        )
+
+        assert res.status_code == status.HTTP_403_FORBIDDEN
+
+        # validate still in db
+        post_in_db = await posts_repo.get_post_by_id(
+            post_id=org1_test_post.id, requesting_user=None
+        )
+
+        assert post_in_db is not None
 
     async def test_delete_own_post(
         self,
         app: FastAPI,
         create_auth_client: Callable,
         test_org1: UserInDB,
+        org1_test_post: PostInDB,
+        db: Database,
     ) -> None:
         """
         Only the organisation that created a post should be able to delete it.
         """
+
+        ac = create_auth_client(user=test_org1)
+        posts_repo = PostsRepository(db)
+
+        res = await ac.delete(
+            app.url_path_for(
+                "posts:delete-post-by-id",
+                post_id=org1_test_post.id,
+            )
+        )
+
+        assert res.status_code == status.HTTP_200_OK
+
+        assert res.json() == org1_test_post.id
+
+        # validate not still in db
+        post_in_db = await posts_repo.get_post_by_id(
+            post_id=org1_test_post.id, requesting_user=None
+        )
+
+        assert post_in_db is None

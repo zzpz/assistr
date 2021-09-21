@@ -102,13 +102,18 @@ async def update_post_by_id(
     "/{post_id}/",
     response_model=int,
     name="posts:delete-post-by-id",
-    dependencies=[],
+    dependencies=[Depends(validate_post_modification_permissons)],
 )
 async def delete_post_by_id(
-    # post
-    # post_repo
-) -> None:
+    post: PostInDB = Depends(get_post_id_from_path),
+    posts_repo: PostsRepository = Depends(get_repository(PostsRepository)),
+) -> int:
     """
     # unimplemented
+
+    user auth handled by posts dependency
     """
-    return None
+
+    deleted_post = await posts_repo.delete_post(post=post)
+
+    return deleted_post
