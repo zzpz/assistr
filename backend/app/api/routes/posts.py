@@ -70,7 +70,7 @@ async def create_new_post(
 @router.put(
     "/{post_id}/",
     response_model=PostPublic,
-    name="posts:update-post",
+    name="posts:update-post-by-id",
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(validate_post_modification_permissons)],  # posts dep
 )
@@ -96,3 +96,19 @@ async def update_post_by_id(
     post = await posts_repo.update_post_by_id(post=post, post_update=post_update)
 
     return post
+
+
+@router.delete(
+    "/{post_id}/",
+    response_model=int,
+    name="posts:delete-post-by-id",
+    dependencies=[],
+)
+async def delete_post_by_id(
+    # post
+    # post_repo
+) -> None:
+    """
+    # unimplemented
+    """
+    return None

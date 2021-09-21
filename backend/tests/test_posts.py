@@ -53,10 +53,10 @@ class TestPostRoutes:
         res = await client.get(app.url_path_for("posts:create-post"))
         assert res.status_code != status.HTTP_404_NOT_FOUND
 
-        # res = await client.get(app.url_path_for("posts:update-post-by-id"))
+        res = await client.get(app.url_path_for("posts:update-post-by-id", post_id=1))
         assert res.status_code != status.HTTP_404_NOT_FOUND
         # res = await client.get(app.url_path_for("posts:delete-post"))
-        assert res.status_code != status.HTTP_404_NOT_FOUND
+        # assert res.status_code != status.HTTP_404_NOT_FOUND
 
         # repeat for all other endpoints
         # res = await client.get(app.url_path_for("posts:update-post"))
@@ -136,3 +136,18 @@ class TestCreatePost:
         assert created_post.long_desc == new_post.long_desc
         assert created_post.location == new_post.location
         assert created_post.org_id == org_user.id
+
+
+class TestUpdatePost:
+    async def test_org_updates_own_post(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        create_auth_client: Callable,
+        # org_user,
+        # post that already exits
+    ) -> None:
+        """
+        Only the organisation that created a post should be able to update it.
+        """
+        pass
