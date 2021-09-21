@@ -29,9 +29,11 @@ from alembic.config import Config
 
 # Repositories
 from app.db.repositories.users import UsersRepository
+from app.db.repositories.posts import PostsRepository
 
 # Models
 from app.models.user import UserCreate, UserInDB
+from app.models.post import PostCreate, PostInDB
 
 # Services (auth)
 from app.services import auth_service
@@ -165,3 +167,105 @@ def create_auth_client(client: AsyncClient) -> Callable:
         return client
 
     return _create_authorised_client
+
+
+# HELPER - create a user helper
+async def helper_create_user(
+    *, db: Database, new_user: UserCreate, org: bool = False
+) -> UserInDB:
+    """
+    Helper function that takes a UserCreate as input and creates that user/org
+    """
+    user_repo = UsersRepository(db)
+    existing_user = await user_repo.get_user_by_email(email=new_user.email)
+    if existing_user:
+        return existing_user
+
+    if org:
+        return await user_repo.create_org(new_user=new_user)
+    else:
+        return await user_repo.create_user(new_user=new_user)
+
+
+# USERS - creates test_user1 + 2 + 3
+@pytest.fixture
+async def test_user1(db: Database) -> UserInDB:
+    new_user = UserCreate(email="testuser1@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_user)
+
+
+@pytest.fixture
+async def test_user2(db: Database) -> UserInDB:
+    new_user = UserCreate(email="testuser2@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_user)
+
+
+@pytest.fixture
+async def test_user3(db: Database) -> UserInDB:
+    new_user = UserCreate(email="testuser3@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_user)
+
+
+# ORGS - creates test_org1 + 2 +3
+@pytest.fixture
+async def test_org1(db: Database) -> UserInDB:
+    new_org = UserCreate(email="testorg1@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_org, org=True)
+
+
+@pytest.fixture
+async def test_org2(db: Database) -> UserInDB:
+    new_org = UserCreate(email="testorg2@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_org, org=True)
+
+
+@pytest.fixture
+async def test_org3(db: Database) -> UserInDB:
+    new_org = UserCreate(email="testorg3@conf.test", password="password")
+    return await helper_create_user(db=db, new_user=new_org, org=True)
+
+
+# LIST of USERS / ORGS for easy access
+@pytest.fixture
+async def test_user_list(
+    test_user1: UserInDB, test_user2: UserInDB, test_user3: UserInDB
+) -> List[UserInDB]:
+    return [test_user1, test_user2, test_user3]
+
+
+@pytest.fixture
+async def test_org_list(
+    test_org1: UserInDB, test_org2: UserInDB, test_org3: UserInDB
+) -> List[UserInDB]:
+    return [test_org1, test_org2, test_org3]
+
+
+@pytest.fixture
+async def test_post_with_interested(
+    db: Database, test_org1: UserInDB, test_user_list: List[UserInDB]
+) -> PostInDB:
+    """
+    Post owned by testorg1 with interest from testuser1,2,3
+    """
+    # get repo's from db
+    post_repo = PostsRepository(db)
+
+    # make a post with test_org1 as owner
+    local_new_post = PostCreate(
+        title="fixture test post with interested",
+        short_desc="fixture short desc",
+        long_desc="fixture long desc",
+        location="fixture location",
+    )
+
+    # create post in repo
+    created_post = await post_repo.create_post(
+        new_post=local_new_post, requesting_user=test_org1
+    )
+
+    # create 'interested in this' for all of the testusers
+    for user in test_user_list:
+        # repo.create_interested_in_post() TODO: implement interested in post
+        interested = user.is_org
+
+    return created_post

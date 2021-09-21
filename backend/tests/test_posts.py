@@ -55,8 +55,11 @@ class TestPostRoutes:
 
         res = await client.get(app.url_path_for("posts:update-post-by-id", post_id=1))
         assert res.status_code != status.HTTP_404_NOT_FOUND
+        assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
         res = await client.get(app.url_path_for("posts:delete-post-by-id", post_id=1))
-        # assert res.status_code != status.HTTP_404_NOT_FOUND
+        assert res.status_code != status.HTTP_404_NOT_FOUND
+        assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
         # repeat for all other endpoints
         # res = await client.get(app.url_path_for("posts:update-post"))
@@ -139,15 +142,67 @@ class TestCreatePost:
 
 
 class TestUpdatePost:
-    async def test_org_updates_own_post(
+    async def test_update_unowned_post(
         self,
         app: FastAPI,
-        client: AsyncClient,
         create_auth_client: Callable,
-        # org_user,
-        # post that already exits
+        test_org3: UserInDB,  # org_user
+        test_post_with_interested: PostInDB,  # unowned post
+    ) -> None:
+        """
+        Can't update other's posts.
+        """
+
+        # create client as org3
+        o3_ac = create_auth_client(user=test_org3)
+
+        # create json for the request
+        update = PostUpdate(is_published=True)
+        valid_payload = update.json()
+
+        # send the post_id as a path paramater in request
+        res = await o3_ac.put(
+            app.url_path_for(
+                "posts:update-post-by-id",
+                post_id=test_post_with_interested.id,
+            ),
+            # post_update=PostUpdate(is_published=True),
+            json=valid_payload,
+        )
+
+        # assert forbidden (not the owner of that post)
+        assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    async def test_update_owned_post(
+        self,
+        app: FastAPI,
+        create_auth_client: Callable,
+        test_org1: UserInDB,  # org_user
+        test_post_with_interested: PostInDB,  # already exists - owned by org
     ) -> None:
         """
         Only the organisation that created a post should be able to update it.
         """
-        pass
+        assert True
+
+
+class TestDeletePost:
+    async def test_delete_unowned_post(
+        self,
+        create_auth_client: Callable,
+        test_org2: UserInDB,
+        test_post_with_interested: PostInDB,  # org1 owned post
+    ) -> None:
+        """
+        Can't delete other's posts.
+        """
+
+    async def test_delete_own_post(
+        self,
+        app: FastAPI,
+        create_auth_client: Callable,
+        test_org1: UserInDB,
+    ) -> None:
+        """
+        Only the organisation that created a post should be able to delete it.
+        """
