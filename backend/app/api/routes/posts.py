@@ -50,14 +50,12 @@ async def list_all_posts(
 async def create_new_post(
     new_post: PostCreate = Body(..., embed=True),  # passed in body as 'new_post'
     posts_repo: PostsRepository = Depends(get_repository(PostsRepository)),
-    current_user: UserInDB = Depends(get_current_user),  # require org user
+    current_user: UserInDB = Depends(get_current_org_user),  # require org user
 ) -> PostPublic:
     """
-    # untested
-    # TODO - current user should be an org to create
-
     Creates a new post.
 
+    Only an organisation can create a post.
 
     """
     created_post = await posts_repo.create_post(
@@ -80,8 +78,6 @@ async def update_post_by_id(
     posts_repo: PostsRepository = Depends(get_repository(PostsRepository)),
 ) -> PostPublic:
     """
-    # untested
-
     Protected route for updating a post. Requires that the current user has valid modify permissions (e.g. is the *owner* of this post)
     """
 
@@ -109,7 +105,7 @@ async def delete_post_by_id(
     posts_repo: PostsRepository = Depends(get_repository(PostsRepository)),
 ) -> int:
     """
-    # unimplemented
+    Protected route for deleting a post. Only the org that owns it may delete it.
 
     user auth handled by posts dependency
     """
