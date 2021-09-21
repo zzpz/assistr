@@ -27,7 +27,7 @@ CREATE_USER_QUERY = """
 # enables creation of an organisation (functionally setting is_org flag to true and creating a org_profile)
 CREATE_ORG_QUERY = """
     INSERT INTO users (email,salt, password, is_org)
-    VALUES (:email, :salt, :password:,:is_org)
+    VALUES (:email, :salt, :password,:is_org)
     RETURNING id, profile_id, email, is_org, salt, password, created_at,
     updated_at;
 """
@@ -143,3 +143,40 @@ class UsersRepository(BaseRepository):
         )
 
         return pub_user
+
+    async def create_org(self, *, new_user: UserCreate) -> UserInDB:
+        """
+        This function exists to create an organisation --> functionally the same as create_user but overrides is_org as true.
+        """
+        # unique constraints exist on email -> confirm is not taken
+        existing_user = await self.get_user_by_email(email=new_user.email)
+
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="That email is already taken. Login or try another.",
+            )
+
+        # UserPasswordUpdate model with password and salt using auth service
+        hashed_pw = self.auth_service.salt_and_hash_pw(
+            plaintext_password=new_user.password
+        )
+
+        # copy and replace in the UserCreate model
+        new_user_hashed_pw = new_user.copy(update=hashed_pw.dict())
+
+        # create ORG in database
+        query_vals = new_user_hashed_pw.copy(update={"is_org": True})
+        created_user = await self.db.fetch_one(
+            query=CREATE_ORG_QUERY, values=query_vals.dict()
+        )
+
+        # create profile for the user (user_id + empty row)
+        await self.profiles_repo.create_profile_for_user(
+            profile_create=ProfileCreate(user_id=created_user["id"])
+        )
+
+        # attach profile to public user by pulling out from db
+        populated_user = await self.populate_user(user=UserInDB(**created_user))
+
+        return populated_user

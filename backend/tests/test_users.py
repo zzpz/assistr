@@ -49,7 +49,6 @@ class TestUserRegistration:
         app: FastAPI,  # see conftest
         client: AsyncClient,  # see conftest
         db: Database,  # see conftest
-        test_user: UserInDB,  # see conftest, this is a persisting test user
     ) -> None:
         # we want to access the database without routing
         user_repo = UsersRepository(db)
@@ -99,7 +98,6 @@ class TestUserRegistration:
         self,
         app: FastAPI,  # see conftest
         client: AsyncClient,  # see conftest
-        db: Database,  # see conftest
         test_user: UserInDB,  # see conftest, this is a persisting test user
     ):
 
@@ -140,3 +138,36 @@ class TestUserRegistration:
             salt=user_in_db.salt,
             hashed_pw=user_in_db.password,
         )
+
+
+class TestOrgRegistration:
+    async def test_register_org_via_repo_only(
+        self,
+        app: FastAPI,
+        client: AsyncClient,
+        db: Database,
+    ) -> None:
+        """
+        tests that we can create an org via the users repo
+        """
+        # we want to access the database without routing
+        user_repo = UsersRepository(db)
+
+        local_test_org = UserCreate(
+            email="localtestorg@test.com",
+            password="password",
+        )
+
+        # this query is not exposed publicly as a route
+        user_in_db = await user_repo.get_user_by_email(email=local_test_org.email)
+
+        # make sure they don't exist
+        assert user_in_db is None
+
+        # hit the repo.create_org()
+        created_org = await user_repo.create_org(new_user=local_test_org)
+
+        # ensure now exists in db
+        user_in_db = await user_repo.get_user_by_email(email=local_test_org.email)
+        assert user_in_db is not None
+        assert user_in_db.email == local_test_org.email
