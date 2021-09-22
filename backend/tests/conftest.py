@@ -234,9 +234,34 @@ async def test_org_list(
     return [test_org1, test_org2, test_org3]
 
 
+# POSTS - creates a test_post belonging to org1
+@pytest.fixture
+async def org1_test_post(db: Database, test_org1: UserInDB) -> PostInDB:
+    """
+    Post owned by testorg1
+    """
+    # get repo's from db
+    post_repo = PostsRepository(db)
+
+    # make a post with test_org1 as owner
+    local_new_post = PostCreate(
+        title="org1 test post",
+        short_desc="org1 short desc",
+        long_desc="org1 long desc",
+        location="org1 location",
+    )
+
+    # create post in repo
+    created_post = await post_repo.create_post(
+        new_post=local_new_post, requesting_user=test_org1
+    )
+
+    return created_post
+
+
 # POSTS + INTERESTED
 @pytest.fixture
-async def test_post_with_interested(
+async def test_post_with_applications(
     db: Database, test_org1: UserInDB, test_user_list: List[UserInDB]
 ) -> PostInDB:
     """
@@ -266,26 +291,6 @@ async def test_post_with_interested(
     return created_post
 
 
-# POSTS - creates a test_post belonging to org1
-@pytest.fixture
-async def org1_test_post(db: Database, test_org1: UserInDB) -> PostInDB:
-    """
-    Post owned by testorg1 with interest from testuser1,2,3
-    """
-    # get repo's from db
-    post_repo = PostsRepository(db)
-
-    # make a post with test_org1 as owner
-    local_new_post = PostCreate(
-        title="org1 test post",
-        short_desc="org1 short desc",
-        long_desc="org1 long desc",
-        location="org1 location",
-    )
-
-    # create post in repo
-    created_post = await post_repo.create_post(
-        new_post=local_new_post, requesting_user=test_org1
-    )
-
-    return created_post
+# HELPER - creates a post belonging to the passed in user
+async def helper_create_post_with_applications() -> None:
+    pass
