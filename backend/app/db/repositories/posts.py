@@ -1,5 +1,4 @@
 from typing import Optional, List
-from app.models.user import UserInDB
 
 # app
 from fastapi import HTTPException, status
@@ -11,6 +10,7 @@ from app.db.repositories.base import BaseRepository
 from app.services import auth_service
 
 # models
+from app.models.user import UserInDB
 from app.models.post import PostCreate, PostInDB, PostPublic, PostUpdate
 
 CREATE_POST_QUERY = """
