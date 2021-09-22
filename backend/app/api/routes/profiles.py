@@ -68,7 +68,7 @@ async def get_own_profile(
     name="profiles:update-current-user-profile",
 )
 async def update_own_profile(
-    # current_user: UserInDB = Depends(get_current_user),
+    current_user: UserInDB = Depends(get_current_user),
     profiles_repo: ProfilesRepository = Depends(get_repository(ProfilesRepository)),
     update_profile: ProfileUpdate = Body(..., embed=True),
 ) -> ProfilePublic:
