@@ -74,51 +74,63 @@ class TestCreatePost:
         self,
         app: FastAPI,
         client: AsyncClient,
+        test_user_auth_client: AsyncClient,
         new_post: PostCreate,
     ) -> None:
         """
         If no authentication/access token is provided, create should return unauthorized.
         """
+        # client is not authenticated
         res = await client.post(
             app.url_path_for("posts:create-post"),
             json={"new_post": new_post.dict()},
         )
         assert res.status_code == status.HTTP_401_UNAUTHORIZED
-        # client is not authenticated
+
+        # authenticated but not an org
+        res = await client.post(
+            app.url_path_for("posts:create-post"),
+            json={"new_post": new_post.dict()},
+        )
+        assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
     async def test_valid_input_creates_post(
         self,
         app: FastAPI,
-        test_user_auth_client: AsyncClient,
-        test_user: UserInDB,
+        create_auth_client: Callable,
+        test_org1: UserInDB,
         new_post: PostCreate,
     ) -> None:
         """
-        test_user is logged in and attempts to create a post.
+        test_org1 is logged in and attempts to create a post.
 
-        Will fail with future changes to orgs only.
+        not paramaterized.
         """
-        res = await test_user_auth_client.post(
+
+        ac = create_auth_client(user=test_org1)
+
+        res = await ac.post(
             app.url_path_for("posts:create-post"),
             json={"new_post": new_post.dict()},
         )
 
         created_post = PostPublic(**res.json())
+
         assert res.status_code == 201
         assert created_post.title == new_post.title
-        assert created_post.org_id == test_user.id
+        assert created_post.org_id == test_org1.id
 
     async def test_valid_input_creates_post_belonging_to_org(
         self,
         app: FastAPI,
         create_auth_client: Callable,
-        test_user: UserInDB,  # will be changed to an org user
+        test_org1: UserInDB,  # will be changed to an org user
         new_post: PostCreate,
     ) -> None:
         """
         Only an org should be able to create a post.
         """
-        org_user = test_user  #
+        org_user = test_org1  #
 
         # create authorised client with user's credentials
         ac = create_auth_client(user=org_user)
@@ -141,6 +153,19 @@ class TestCreatePost:
         assert created_post.long_desc == new_post.long_desc
         assert created_post.location == new_post.location
         assert created_post.org_id == org_user.id
+
+
+class TestReadPost:
+    """
+    This class exists to test functionality for listing posts. E.g. expect 3, return 3, created posts exist in list etc.
+    """
+
+    async def test_UNIMPLEMENTED_created_posts_are_returned(
+        self,
+        app: FastAPI,
+        create_auth_client: Callable,
+    ) -> None:
+        pass
 
 
 class TestUpdatePost:
@@ -273,6 +298,61 @@ class TestUpdatePost:
         for attr, val in updated_post.dict().items():
             if attr not in attrs_to_change and attr != "updated_at":
                 assert getattr(org1_test_post, attr) == val
+
+    # paramaters for test TODO: - make fail with invalid values
+    @pytest.mark.parametrize(
+        "attrs_to_change, vals, status_code",
+        (
+            (["title"], ["something invalid"], [400]),
+            # (  # multiple values changing
+            #     ["title", "short_desc", "image"],  # attr
+            #     ["new title", "new short desc", "invalid image"],  # vals
+            #     [400],
+            # ),
+        ),
+    )
+    async def test_UNIMPLEMENTED_update_post_with_invalid_input_fails(
+        self,
+        app: FastAPI,
+        create_auth_client: Callable,
+        test_org1: UserInDB,
+        org1_test_post: PostInDB,
+        attrs_to_change: List[str],
+        vals: List[str],
+        status_code: int,
+    ) -> None:
+        """
+        Paramaterized test for a post owned by test_org1
+
+        TODO: invalid inputs and expected codes
+        """
+        pass
+        # # client
+        # ac = create_auth_client(user=test_org1)
+        # # generate json using dict comprehension
+        # invalid_payload = {
+        #     "post_update": {
+        #         attrs_to_change[i]: vals[i] for i in range(len(attrs_to_change))
+        #     }
+        # }
+
+        # # hit route with payload
+        # res = await ac.put(
+        #     app.url_path_for(
+        #         "posts:update-post-by-id",
+        #         post_id=org1_test_post.id,
+        #     ),
+        #     json=invalid_payload,
+        # )
+
+        # # assert res.status_code == status_code
+
+        # # updated_post = posts_repo.get_post_by_id(org1_test_post)
+
+        # # # assert no changes made
+        # # for attr, val in updated_post.dict().items():
+        # #     if attr in attrs_to_change:
+        # #         assert getattr(org1_test_post, attr) != val
 
 
 class TestDeletePost:
