@@ -10,7 +10,6 @@ from app.db.repositories.users import UsersRepository
 
 # models
 from app.models.user import UserCreate, UserInDB, UserPublic
-from tests.conftest import test_user
 
 # services
 from app.services import auth_service
