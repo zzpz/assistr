@@ -23,3 +23,7 @@ pytest  # testing framework
 pytest-asyncio  # async testing 
 httpx   # http requests library
 asgi-lifespan    # mocks an async server
+
+
+# filestore
+pyseaweed #simplifies some of the commands to access seaweedFS
