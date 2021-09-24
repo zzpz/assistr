@@ -10,7 +10,7 @@ config = Config(".env")
 # project + app
 
 PROJECT_NAME = "assistr"
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 API_PREFIX = "/api"
 
 
