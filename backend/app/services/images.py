@@ -16,8 +16,7 @@ from pyseaweed import WeedFS
 
 class ImageService:
 
-    fs = WeedFS(FS_MASTER_URL, FS_MASTER_PORT)
-
+    fs: WeedFS
     # file upload
 
     # file id --> store in database
@@ -26,11 +25,24 @@ class ImageService:
 
     # return file
 
-    def upload_file(f) -> None:
+    def __init__(self) -> None:
+        self.fs = WeedFS(master_addr=FS_MASTER_URL, master_port=FS_MASTER_PORT)
+
+    def upload_image(self, image: UploadFile) -> None:
         """
-        Takes File, returns fid
+        Takes File, returns fid, saves fid to database?
         """
-        pass
+
+        # UploadFile is a streamable object
+
+        # return image.filename
+
+        # # # TODO: overwrite filename with profile_userID, post_postID?
+        fid = self.fs.upload_file(stream=image.file, name=image.filename)
+
+        self.fs.delete_file(fid)
+
+        return fid
 
 
 # url for the image

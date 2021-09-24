@@ -19,9 +19,7 @@ from app.models.user import UserCreate, UserInDB, UserPublic
 from app.db.repositories.users import UsersRepository
 
 # services
-from app.services import auth_service
-
-# from app.services import image_service
+from app.services import image_service
 
 router = APIRouter()
 
@@ -59,4 +57,10 @@ async def upload_post_image(
     Returns public file URL
     """
 
-    return "app.com/volume,fileID"
+    # return image.filename
+    # fid = image_service.upload_image(image)
+
+    fid = image_service.upload_image(image=image)
+
+    return f"fid: {fid} added then deleted"
+    # return "app.com/volume,fileID"
