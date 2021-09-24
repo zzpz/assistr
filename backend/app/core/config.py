@@ -42,5 +42,5 @@ DB_MAX_CONNECTIONS = config("DB_MAX_CONNECTIONS", cast=int, default=10)
 
 
 # Filestore / S3
-FS_MASTER_URL = config("FILESTORE_URL", cast=str, default="localhost")
+FS_MASTER_URL = config("FILESTORE_URL", cast=str, default="master")
 FS_MASTER_PORT = config("FS_MASTER_PORT", cast=int, default=9333)
