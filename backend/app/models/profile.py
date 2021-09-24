@@ -25,7 +25,9 @@ class ProfileBase(CoreModel):
     # common
     phone: Optional[constr(min_length=3, max_length=20)]  # no constraints
     bio: Optional[str]
-    image: Optional[str]  # Optional[HttpUrl] Optional[FilePath]
+    image: Optional[
+        str
+    ] = "static_profile_default"  # Optional[HttpUrl] Optional[FilePath]
 
 
 class ProfileCreate(ProfileBase):
