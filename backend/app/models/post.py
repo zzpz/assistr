@@ -14,7 +14,7 @@ class PostBase(CoreModel):
     long_desc: Optional[str] = "long_desc"
     is_published: Optional[bool] = True
     location: Optional[str] = "location"
-    image: Optional[str] = "image"
+    image: Optional[str] = "static_post_default"
 
 
 #     title: Optional[str]  # not optional

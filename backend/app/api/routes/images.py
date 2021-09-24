@@ -9,14 +9,18 @@ from starlette.responses import PlainTextResponse
 # dependencies
 from app.api.dependencies.database import get_repository
 from app.api.dependencies.auth import get_current_user
-from app.api.dependencies.posts import validate_post_modification_permissons
+from app.api.dependencies.posts import (
+    get_post_id_from_path,
+    validate_post_modification_permissons,
+)
+
 
 # models
-from app.models.token import AccessToken
-from app.models.user import UserCreate, UserInDB, UserPublic
+from app.models.post import PostInDB
 
 # repositories
-from app.db.repositories.users import UsersRepository
+from app.db.repositories.images import ImagesRepository
+from app.models.user import UserInDB
 
 # services
 from app.services import image_service
@@ -26,9 +30,10 @@ router = APIRouter()
 
 @router.post("/profile")
 async def upload_profile_image(
+    current_user: UserInDB = Depends(get_current_user),
     image: UploadFile = File(...),  # image as a streamable file
-    image_repo: UsersRepository = Depends(
-        get_repository(UsersRepository)
+    image_repo: ImagesRepository = Depends(
+        get_repository(ImagesRepository)
     ),  # images repo
 ) -> str:
     """
@@ -45,22 +50,56 @@ async def upload_profile_image(
     status_code=status.HTTP_201_CREATED,
     # dependencies=[Depends(validate_post_modification_permissons)],
 )
-async def upload_post_image(
+async def upload_post_image(  # technically 'update post image'
     image: UploadFile = File(...),
-    image_repo: UsersRepository = Depends(
-        get_repository(UsersRepository)
+    post: PostInDB = Depends(get_post_id_from_path),  # posts dependency
+    image_repo: ImagesRepository = Depends(
+        get_repository(ImagesRepository)
     ),  # images repo
 ) -> str:
     """
+    # UNTESTED
     Takes a file as input
 
     Returns public file URL
     """
+    # make sure post exists and have permissions to edit --> dependency
 
-    # return image.filename
-    # fid = image_service.upload_image(image)
+    fid = post.image
+    # get fid from PostInDB.image
 
-    fid = image_service.upload_image(image=image)
+    # here we SHOULD just overwrite if it already exists in FS...
+    if fid == "static_post_default":
+        # upload the image
+        newfid = image_service.upload_image(image=image)
+        # update the database reference
+        await image_repo.update_fid(id_holder=post, newfid=newfid)
 
-    return f"fid: {fid} added then deleted"
-    # return "app.com/volume,fileID"
+        # delete old image not necessary
+        # image_service.delete_image(fid=fid)
+    else:
+        newfid = image_service.upload_image(image=image)
+        await image_repo.update_fid(id_holder=post, newfid=newfid)
+        image_service.delete_image(fid=fid)
+
+    # no easy 'update?' we basically delete and re-upload.. seems poor
+    # I DONT WANT TO UPDATE THE DATABASE EVERYTIME.
+    # JUST SAVE THE ID ONCE AND CHANGE WHAT THE URL REFERENCES
+
+    # return public_url
+    public_url = image_service.get_public_image_url(fid=newfid)
+
+    return public_url
+
+
+@router.delete("/", name="images:delete_all", status_code=status.HTTP_200_OK)
+async def delete_all_images() -> None:
+    """
+    # curl "http://localhost:9333/col/delete?collection="
+    ## TODO
+
+    ## easily delete all images uploaded.
+    """
+
+    # "TODO"
+    # curl "http://localhost:9333/col/delete?collection="

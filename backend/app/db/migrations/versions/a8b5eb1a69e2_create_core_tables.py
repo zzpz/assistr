@@ -102,7 +102,7 @@ def create_posts_table() -> None:
         sa.Column("short_desc", sa.Text, nullable=False, server_default="short_desc"),
         sa.Column("long_desc", sa.Text, nullable=False, server_default="long_desc"),
         sa.Column(
-            "image", sa.Text, nullable=True, server_default="image"
+            "image", sa.Text, nullable=False, server_default="default"
         ),  # url to post 'image(s)',
         sa.Column("location", sa.Text, nullable=True, server_default="location"),
         sa.Column("is_published", sa.Boolean, nullable=False),
@@ -129,7 +129,7 @@ def create_profiles_table() -> None:
         sa.Column("last", sa.Text, nullable=True),
         sa.Column("phone", sa.Text, nullable=True),
         sa.Column("bio", sa.Text, nullable=True, server_default=""),
-        sa.Column("image", sa.Text, nullable=True),
+        sa.Column("image", sa.Text, nullable=False, server_default="default"),
         sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id", ondelete="CASCADE")),
         sa.Column("org_name", sa.Text, nullable=True, server_default=""),
         sa.Column("org_loc", sa.Text, nullable=True, server_default=""),
