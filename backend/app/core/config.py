@@ -1,4 +1,5 @@
 from databases import DatabaseURL
+from starlette.datastructures import URL
 from starlette.config import Config
 from starlette.datastructures import Secret
 
@@ -36,7 +37,10 @@ DATABASE_URL = config(
     cast=DatabaseURL,
     default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
 )
-
-
 DB_MIN_CONNECTIONS = config("DB_MIN_CONNECTIONS", cast=int, default=2)
 DB_MAX_CONNECTIONS = config("DB_MAX_CONNECTIONS", cast=int, default=10)
+
+
+# Filestore / S3
+FS_MASTER_URL = config("FILESTORE_URL", cast=str, default="localhost")
+FS_MASTER_PORT = config("FS_MASTER_PORT", cast=int, default=9333)
