@@ -12,6 +12,9 @@ import { Link } from "react-router-dom"
 import validation from "../../utils/validation"
 import { htmlIdGenerator } from "@elastic/eui/lib/services"
 import styled from "styled-components"
+import { connect } from "react-redux"
+import { Actions as authActions, FETCHING_USER_FROM_TOKEN_SUCCESS } from "../../redux/auth"
+import { useNavigate } from "react-router-dom"
 
 const RegistrationFormWrapper = styled.div`
   padding: 2rem;
@@ -20,18 +23,22 @@ const NeedAccountLink = styled.span`
   font-size: 0.8rem;
 `
 
-export default function RegistrationForm({
-  registerUser = async ({ username, email, password }) =>
-    console.log(`Signing up with ${username}, ${email}, and ${password}.`)
-}) {
+function RegistrationForm({ authError, user, isLoading, isAuthenticated, registerUser }) {
   const [form, setForm] = React.useState({
-    username: "",
     email: "",
     password: "",
     passwordConfirm: ""
   })
   const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [errors, setErrors] = React.useState({})
+  const navigate = useNavigate()
+
+    // if the user is already authenticated, redirect them to the "/profile" page
+  React.useEffect(() => {
+    if (user?.email && isAuthenticated) {
+      navigate("/profile")
+    }
+  }, [user, navigate, isAuthenticated])
 
   const validateInput = (label, value) => {
     // grab validation function and run it on input if it exists
@@ -82,7 +89,14 @@ export default function RegistrationForm({
       return
     }
 
-    await registerUser({ username: form.username, email: form.email, password: form.password })
+    const action = await registerUser({
+      email: form.email,
+      password: form.password
+    })
+    // reset password inputs in case registration is unsuccessful
+    if (action?.type !== FETCHING_USER_FROM_TOKEN_SUCCESS) {
+      setForm((form) => ({ ...form, password: "", passwordConfirm: "" }))
+    }
   }
 
   return (
@@ -106,22 +120,6 @@ export default function RegistrationForm({
             onChange={(e) => handleInputChange("email", e.target.value)}
             aria-label="Enter the email associated with your account."
             isInvalid={Boolean(errors.email)}
-          />
-        </EuiFormRow>
-
-        <EuiFormRow
-          label="Username"
-          helpText="Choose a username consisting solely of letters, numbers, underscores, and dashes."
-          isInvalid={Boolean(errors.username)}
-          error={`Please enter a valid username.`}
-        >
-          <EuiFieldText
-            icon="user"
-            placeholder="your_username"
-            value={form.username}
-            onChange={(e) => handleInputChange("username", e.target.value)}
-            aria-label="Choose a username consisting of letters, numbers, underscores, and dashes."
-            isInvalid={Boolean(errors.username)}
           />
         </EuiFormRow>
 
@@ -163,7 +161,7 @@ export default function RegistrationForm({
           onChange={(e) => setAgreedToTermsCheckbox(e)}
         />
         <EuiSpacer />
-        <EuiButton type="submit" fill>
+        <EuiButton type="submit" isLoading={isLoading} fill>
           Sign Up
         </EuiButton>
       </EuiForm>
@@ -178,3 +176,14 @@ export default function RegistrationForm({
 }
 
 
+export default connect(
+  (state) => ({
+    authError: state.auth.error,
+    isLoading: state.auth.isLoading,
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
+  }),
+  {
+    registerUser: authActions.registerNewUser
+  }
+)(RegistrationForm)

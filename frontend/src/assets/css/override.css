@@ -3,12 +3,16 @@ a:focus {
   text-decoration: none !important;
   color: dodgerblue;
 }
-.euiHeaderSectionItem:after {
+/* .euiHeaderSectionItem:after {
   display: none;
-}
+} */
 
 .userAvatar {
     justify-self: right;
+}
+
+.euiPage {
+  background-color: #004B67;
 }
 
 /* .euiHeader {
