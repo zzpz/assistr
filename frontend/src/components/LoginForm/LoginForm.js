@@ -32,7 +32,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    if (user?.email && isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/profile")
     }
   }, [user, navigate, isAuthenticated])

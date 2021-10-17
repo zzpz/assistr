@@ -1,5 +1,7 @@
 export { default as App } from "./App/App"
-
+export { default as OpportunityCreateForm } from "./OpportunityCreateForm/OpportunityCreateForm"
+export { default as OpportunityHome } from "./OpportunityHome/OpportunityHome"
+export { default as OpportunityPage } from "./OpportunityPage/OpportunityPage"
 export { default as LandingPage } from "./LandingPage/LandingPage"
 export { default as Layout } from "./Layout/Layout"
 export { default as LoginForm } from "./LoginForm/LoginForm"
