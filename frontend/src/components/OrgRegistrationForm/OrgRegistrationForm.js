@@ -25,7 +25,7 @@ const NeedAccountLink = styled.span`
   font-size: 0.8rem;
 `
 
-function RegistrationForm({ authError, user, isLoading, isAuthenticated, registerUser }) {
+function OrgRegistrationForm({ authError, user, isLoading, isAuthenticated, registerNewOrg }) {
   const [form, setForm] = React.useState({
     email: "",
     password: "",
@@ -93,7 +93,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
       return
     }
 
-    const action = await registerUser({
+    const action = await registerNewOrg({
       email: form.email,
       password: form.password
     })
@@ -111,12 +111,6 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
         isInvalid={Boolean(errors.form)}
         error={[errors.form]}
       >
-        <EuiFormRow
-          label="Are you an Organisation?"
-        >
-          <EuiLink href="registration/org">Click here to find out more</EuiLink>
-           
-        </EuiFormRow>
         <EuiFormRow
           label="Email"
           helpText="Enter the email associated with your account."
@@ -194,6 +188,6 @@ export default connect(
     user: state.auth.user
   }),
   {
-    registerUser: authActions.registerNewUser
+    registerNewOrg: authActions.registerNewOrg
   }
-)(RegistrationForm)
+)(OrgRegistrationForm)

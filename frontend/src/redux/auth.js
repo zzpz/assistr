@@ -69,6 +69,7 @@ export default function authReducer(state = initialState.auth, action = {}) {
       return {
         ...state,
         isLoading: false,
+        isOrg: false,
         error: null
       }
     case REQUEST_USER_SIGN_UP_FAILURE:
@@ -108,7 +109,10 @@ Actions.requestUserLogin = ({ email, password }) => {
         console.log(res)
         // stash the access_token our server returns
         const access_token = res?.data?.access_token
+        const is_org = res?.data?.is_org
         localStorage.setItem("access_token", access_token)
+        localStorage.setItem("is_org", is_org)
+
         // dispatch the success action
         dispatch({ type: REQUEST_LOGIN_SUCCESS })
         return dispatch(Actions.fetchUserFromToken(access_token))
@@ -146,6 +150,8 @@ Actions.fetchUserFromToken = (access_token) => {
 
 Actions.logUserOut = () => {
   localStorage.removeItem("access_token")
+  localStorage.removeItem("is_org")
+
   return {
     type: REQUEST_LOG_USER_OUT
   }
@@ -165,7 +171,36 @@ Actions.registerNewUser = ({ email, password }) => {
         },
       })
       const access_token = res?.data?.access_token?.access_token
+      const is_org = res?.data?.is_org
+      // const is_org = res?.data?.is_org
       localStorage.setItem("access_token", access_token)
+      localStorage.setItem("is_org", is_org)
+      // localStorage.setItem("access_token", access_token)
+      dispatch({ type: REQUEST_USER_SIGN_UP_SUCCESS })
+      return dispatch(Actions.fetchUserFromToken(access_token))
+    } catch (error) {
+      console.log(error)
+      dispatch({ type: REQUEST_USER_SIGN_UP_FAILURE, error })
+    }
+  }
+}
+
+Actions.registerNewOrg = ({ email, password }) => {
+  return async (dispatch) => {
+    dispatch({ type: REQUEST_USER_SIGN_UP })
+    try {
+      const res = await axios({
+        method: `POST`,
+        url: `http://localhost:8000/api/users/org/`,
+        data: { new_user: { email, password } },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      const access_token = res?.data?.access_token?.access_token
+      const is_org = res?.data?.is_org
+      localStorage.setItem("access_token", access_token)
+      localStorage.setItem("is_org", is_org)
       dispatch({ type: REQUEST_USER_SIGN_UP_SUCCESS })
       return dispatch(Actions.fetchUserFromToken(access_token))
     } catch (error) {

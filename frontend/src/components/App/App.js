@@ -8,7 +8,9 @@ import {
   NotFoundPage, 
   ProfilePage, 
   ProtectedRoute,
-  RegistrationPage } from "../../components"
+  RegistrationPage,
+  OrgRegistrationPage
+} from "../../components"
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />  
           <Route path="/registration" element={<RegistrationPage />} />
+          <Route path="/registration/org" element={<OrgRegistrationPage />} />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>

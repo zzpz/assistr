@@ -56,6 +56,7 @@ async def create_user(
     access_token = AccessToken(
         access_token=auth_service.create_access_token_for_user(user=created_user),
         token_type="bearer",
+        is_org = created_user.is_org,
     )
 
     # return a public model
@@ -95,6 +96,7 @@ async def login_user_with_email_and_password(
     access_token = AccessToken(
         access_token=auth_service.create_access_token_for_user(user=user),
         token_type="bearer",
+        is_org = user.is_org,
     )
 
     return access_token
@@ -123,6 +125,7 @@ async def create_org(
     access_token = AccessToken(
         access_token=auth_service.create_access_token_for_user(user=created_user),
         token_type="bearer",
+        is_org = created_user.is_org
     )
 
     # return a public model
