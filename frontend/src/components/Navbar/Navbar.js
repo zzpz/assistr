@@ -84,11 +84,15 @@ import {
   EuiLink
 } from "@elastic/eui"
 import { Link } from "react-router-dom"
-import loginIcon from "../../assets/img/icon.svg"
+import logoIconAsReactSVGComponent from "../IconHacks/logo"
+import loginIcon from "../../assets/img/loginIcon.svg"
 import styled from "styled-components"
 
-const LogoSection = styled(EuiHeaderLink)`
-  padding: 0 2rem;
+const LogoSection = styled(EuiHeaderSection)`
+  padding: 0 0;
+`
+const MainLogo = styled(EuiIcon)`
+  margin-bottom: 4px;
 `
 
 const AvatarMenu = styled.div`
@@ -170,8 +174,8 @@ function Navbar({ auth, logUserOut, ...props }) {
     <EuiHeader style={props.style || {}}>
       <EuiHeaderSection>
         <EuiHeaderSectionItem border="right">
-          <LogoSection href="/">
-            <EuiIcon type="cloudDrizzle" color="#1E90FF" size="l" /> Phresh
+          <LogoSection>
+            <MainLogo type={logoIconAsReactSVGComponent} />
           </LogoSection>
         </EuiHeaderSectionItem>
         <EuiHeaderSectionItem border="right">
