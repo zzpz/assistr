@@ -7,7 +7,6 @@ import {
   EuiFormRow,
   EuiFieldPassword,
   EuiSpacer,
-  EuiSwitch,
   EuiLink
 } from "@elastic/eui"
 import { Link } from "react-router-dom"
@@ -33,14 +32,13 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
   })
   const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [errors, setErrors] = React.useState({})
-  const [isOrg, setIsOrg] = React.useState(false);
 
   const navigate = useNavigate()
 
     // if the user is already authenticated, redirect them to the "/profile" page
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate("/profile")
+      navigate("/edit-profile")
     }
   }, [user, navigate, isAuthenticated])
 

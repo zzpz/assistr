@@ -9,8 +9,7 @@ import {
   EuiPageHeaderSection,
   EuiTitle,
   EuiText,
-  EuiFieldText,
-  EuiSideNav
+  EuiFieldText
 } from "@elastic/eui"
 import { OpportunityCreateForm } from ".."
 import styled from "styled-components"
@@ -30,21 +29,22 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
   }
 `
 
-function OpportunityHome({ user }) {
+function OpportunityCreate({ user }) {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
             <EuiTitle size="l">
-              <h1>Opportunities</h1>
+              <h1>Create an Opportunity</h1>
             </EuiTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <EuiPageContentBody>
-            <EuiText>Opportunities</EuiText>
-            
+            <>
+              <OpportunityCreateForm />
+            </>
           </EuiPageContentBody>
         </EuiPageContent>
       </EuiPageBody>
@@ -52,5 +52,5 @@ function OpportunityHome({ user }) {
   )
 }
 
-export default connect((state) => ({ user: state.auth.user }))(OpportunityHome)
+export default connect((state) => ({ user: state.auth.user }))(OpportunityCreate)
 

@@ -27,27 +27,29 @@ GET_PROFILE_BY_ID = """
     WHERE user_id = :user_id;
 """
 
-UPDATE_USER_PROFILE_QUERY = """
+UPDATE_PROFILE_QUERY = """
     UPDATE profiles
-    SET first       = :first,
+    SET 
+        first       = :first,
         last        = :last,
-        phone       = :phone,
-        bio         = :bio,
-        image       = :image
-    WHERE user_id = :user_id
-    RETURNING id, first, last, phone, bio, image, user_id, created_at, updated_at;
-"""
-
-UPDATE_ORG_PROFILE_QUERY = """
-    UPDATE profiles
-    SET org_name    = :org_name,
+        org_name    = :org_name,
         org_loc     = :org_loc,
         phone       = :phone,
         bio         = :bio,
         image       = :image
     WHERE user_id = :user_id
-    RETURNING id, first, last, phone, bio, image, user_id, created_at, updated_at;        
+    RETURNING id, first, last, org_name, org_loc, phone, bio, image, user_id, created_at, updated_at;
 """
+
+# UPDATE_ORG_PROFILE_QUERY = """
+#     UPDATE profiles
+#     SET
+#         phone       = :phone,
+#         bio         = :bio,
+#         image       = :image
+#     WHERE user_id = :user_id
+#     RETURNING id, first, last, phone, bio, image, user_id, created_at, updated_at;
+# """
 
 
 class ProfilesRepository(BaseRepository):
@@ -68,7 +70,6 @@ class ProfilesRepository(BaseRepository):
     ) -> ProfileInDB:
         """
         Given a user_id and is_org we create a profile.
-
         # we don't create a profile really, we just kind of make an empty entry with id and update separately.
         """
 
@@ -101,6 +102,34 @@ class ProfilesRepository(BaseRepository):
     async def update_profile(
         self,
         *,
-        requesting_user: UserInDB,
-    ) -> None:
-        pass
+        profile: ProfileInDB,
+        profile_update: ProfileUpdate,
+    ) -> ProfileInDB:
+        """
+        Update a profile of a given user.
+        # get the current profile
+        # use that as the supplying values, overwrite with supplied updates
+        # return
+        """
+
+        # get update params by copying current profile and overriding updated
+        update_params = profile.copy(update=profile_update.dict(exclude_unset=True))
+
+        # handle database constraints here (nullable/etc)
+
+        # pass the paramaaters from the profile.dict() to the update query
+        updated_profile = await self.db.fetch_one(
+            query=UPDATE_PROFILE_QUERY,
+            values=update_params.dict(
+                exclude={
+                    "id",  # we don't use pk we use user_id as the where clause
+                    "created_at",
+                    "updated_at",
+                },
+            ),
+        )
+
+        if not updated_profile:
+            return None
+
+        return ProfileInDB(**updated_profile)

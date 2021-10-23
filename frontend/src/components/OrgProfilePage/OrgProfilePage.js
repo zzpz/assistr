@@ -79,7 +79,7 @@ const StyledProfileSubsection1 = styled(EuiPageContent)`
 `
 
 
-function ProfilePage({ user }) {
+function OrgProfilePage({ user }) {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
@@ -102,7 +102,7 @@ function ProfilePage({ user }) {
                       <EuiIcon type="heart" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Opportunities" href="#">
+                  <EuiKeyPadMenuItem label="Opportunities" href="/org-profile/createdOpportunities">
                       <EuiIcon type="accessibility" size="l" />
                   </EuiKeyPadMenuItem>
                 </StyledKeyPadMenu>
@@ -120,6 +120,9 @@ function ProfilePage({ user }) {
                   initialsLength={2}
                   imageUrl={user.image}
                   />
+                  <EuiTitle size="l">
+                  <h2>@{user.first}</h2>
+                  </EuiTitle>
                   <EuiText>
                   <p>
                       <EuiIcon type="user" />{" "}
@@ -131,6 +134,9 @@ function ProfilePage({ user }) {
                   </p>
                   <p>
                       <EuiIcon type="clock" /> Member since {moment(user.created_at).format("MM-DD-YYYY")}
+                  </p>
+                  <p>
+                      <EuiIcon type="mapMarker" /> {user.org_loc}
                   </p>
                   <EuiHorizontalRule />
                   <p>
@@ -152,5 +158,5 @@ function ProfilePage({ user }) {
   )
 }
 
-export default connect((state) => ({ user: state.auth.user }))(ProfilePage)
+export default connect((state) => ({ user: state.auth.user }))(OrgProfilePage)
 

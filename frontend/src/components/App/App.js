@@ -8,8 +8,13 @@ import {
   NotFoundPage, 
   ProfilePage, 
   ProtectedRoute,
+  OrgRoute,
   RegistrationPage,
-  OrgRegistrationPage
+  OrgRegistrationPage,
+  OrgProfileEdit,
+  ProfileRoute,
+  OrgProfilePage,
+  OrgOpportunities
 } from "../../components"
 
 export default function App() {
@@ -20,12 +25,18 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route
               path="/opportunities/*"
-              element={<ProtectedRoute component={OpportunityPage} />}
+              element={<OrgRoute component={OpportunityPage} />}
             />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />  
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/registration/org" element={<OrgRegistrationPage />} />
+          <Route
+              path="/edit-profile/*"
+              element={<ProfileRoute component={OrgProfileEdit} />}
+            />
+          <Route path="/org-profile" element={<OrgProfilePage />} />
+          <Route path="/org-profile/createdOpportunities" element={<OrgOpportunities />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

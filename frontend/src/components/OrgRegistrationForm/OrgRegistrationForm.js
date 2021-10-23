@@ -6,9 +6,7 @@ import {
   EuiForm,
   EuiFormRow,
   EuiFieldPassword,
-  EuiSpacer,
-  EuiSwitch,
-  EuiLink
+  EuiSpacer
 } from "@elastic/eui"
 import { Link } from "react-router-dom"
 import validation from "../../utils/validation"
@@ -33,14 +31,13 @@ function OrgRegistrationForm({ authError, user, isLoading, isAuthenticated, regi
   })
   const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [errors, setErrors] = React.useState({})
-  const [isOrg, setIsOrg] = React.useState(false);
 
   const navigate = useNavigate()
 
     // if the user is already authenticated, redirect them to the "/profile" page
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate("/profile")
+      navigate("/edit-profile")
     }
   }, [user, navigate, isAuthenticated])
 

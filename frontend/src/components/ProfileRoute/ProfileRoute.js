@@ -1,9 +1,38 @@
 import React from "react"
-import { EuiGlobalToastList, EuiLoadingSpinner } from "@elastic/eui"
-import { LoginPage, OrgProfilePage, ProfilePage } from "../../components"
+import {
+  EuiGlobalToastList, 
+  EuiLoadingSpinner,
+  EuiPage,
+  EuiPageBody,
+  EuiPageContent,
+  EuiPageContentBody,
+  EuiPageHeader,
+  EuiPageHeaderSection,
+  EuiTitle
+} from "@elastic/eui"
+import { LoginPage } from ".."
+import { OrgProfileEdit, VolunteerProfileEdit } from ".."
 import { connect } from "react-redux"
+import styled from "styled-components"
 
-function ProtectedRoute({
+
+
+const StyledEuiPage = styled(EuiPage)`
+  flex: 1;
+`
+const StyledEuiPageHeader = styled(EuiPageHeader)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+
+  & h1 {
+    font-size: 3.5rem;
+  }
+`
+
+
+function ProfileRoute({
   user,
   userLoaded,
   isAuthenticated,
@@ -25,12 +54,11 @@ function ProtectedRoute({
   // if (!userLoaded) return <EuiLoadingSpinner size="xl" />
   const isAuthed = isAuthenticated && Boolean(user?.user_id)
   const isOrg = localStorage.getItem("is_org")
-
-
+  // console.log(isOrg)
   if (!isAuthed) {
     return (
       <>
-        <LoginPage />
+        {/* <LoginPage /> */}
         <EuiGlobalToastList
           toasts={toasts}
           dismissToast={() => setToasts([])}
@@ -44,16 +72,16 @@ function ProtectedRoute({
 
   if (isOrg == "true") {
     
-    return <OrgProfilePage />
+    return <OrgProfileEdit />
 
   }
 
-  return <ProfilePage />
+  return <VolunteerProfileEdit />
 }
 
 export default connect((state) => ({
   user: state.auth.user,
   isAuthenticated: state.auth.isAuthenticated,
   userLoaded: state.auth.userLoaded
-}))(ProtectedRoute)
+}))(ProfileRoute)
 

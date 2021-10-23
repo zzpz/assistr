@@ -15,7 +15,8 @@ import {
   EuiKeyPadMenu,
   EuiKeyPadMenuItem,
   EuiFlexGroup,
-  EuiFlexItem
+  EuiFlexItem,
+  EuiButton
 } from "@elastic/eui"
 import moment from "moment"
 import styled from "styled-components"
@@ -51,6 +52,8 @@ const StyledProfileSubsection = styled(EuiPageContent)`
   align-items: center;
   justify-content: center;
   margin: 50px;
+  min-width: 500px;
+  min-height: 500px;
 `
 const StyledKeyPadMenu = styled(EuiKeyPadMenu)`
   display: flex;
@@ -77,9 +80,13 @@ const StyledProfileSubsection1 = styled(EuiPageContent)`
   margin: 50px;
   align-self: left;
 `
+const StyledStartButton = styled(EuiButton)`
+  border-radius: 10px;
+  margin-top: 18px;
+`
 
 
-function ProfilePage({ user }) {
+function OrgOpportunities({ user }) {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
@@ -94,7 +101,7 @@ function ProfilePage({ user }) {
                 <EuiText>My Profile</EuiText>
                 <StyledKeyPadMenu>
                     
-                  <EuiKeyPadMenuItem isSelected label="Me" href="#">
+                  <EuiKeyPadMenuItem label="Me" href="#">
                       <EuiIcon type="user" size="l" />
                   </EuiKeyPadMenuItem>
 
@@ -102,7 +109,7 @@ function ProfilePage({ user }) {
                       <EuiIcon type="heart" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Opportunities" href="#">
+                  <EuiKeyPadMenuItem isSelected label="Opportunities" href="/opportunities/create">
                       <EuiIcon type="accessibility" size="l" />
                   </EuiKeyPadMenuItem>
                 </StyledKeyPadMenu>
@@ -112,33 +119,9 @@ function ProfilePage({ user }) {
             </EuiFlexItem>
             <EuiFlexItem grow={3}>
             <StyledProfileSubsection verticalPosition="center" horizontalPosition="center">
-
-              <StyledEuiPageContentBody>
-                  <EuiAvatar
-                  size="xl"
-                  name={user.first || user.username || "Anonymous"}
-                  initialsLength={2}
-                  imageUrl={user.image}
-                  />
-                  <EuiText>
-                  <p>
-                      <EuiIcon type="user" />{" "}
-                      {user.first || user.org_name}
-                  </p>
-                  <p>
-                      <EuiIcon type="number" />{" "}
-                      {user.phone ? user.phone : "No phone number added"}
-                  </p>
-                  <p>
-                      <EuiIcon type="clock" /> Member since {moment(user.created_at).format("MM-DD-YYYY")}
-                  </p>
-                  <EuiHorizontalRule />
-                  <p>
-                      <EuiIcon type="quote" />{" "}
-                      {user.bio ? user.bio : "This user hasn't written a bio yet"}
-                  </p>
-                  </EuiText>
-              </StyledEuiPageContentBody>
+                <EuiText> Start by creating your first listing!</EuiText>
+                <StyledStartButton margin="5px" fill href="/opportunities/create"> Get Started
+                </StyledStartButton>
             </StyledProfileSubsection>
 
             </EuiFlexItem>
@@ -152,5 +135,5 @@ function ProfilePage({ user }) {
   )
 }
 
-export default connect((state) => ({ user: state.auth.user }))(ProfilePage)
+export default connect((state) => ({ user: state.auth.user }))(OrgOpportunities)
 

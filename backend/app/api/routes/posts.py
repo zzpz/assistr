@@ -64,30 +64,32 @@ async def create_new_post(
 
     return created_post
 
+@router.get(
+    "/{post_id}/",
+    response_model=PostPublic,
+    name="posts:get-post-by-id"
+)
+async def get_post_by_id(
+    post: PostInDB = Depends(get_post_id_from_path)
+) -> PostPublic:
+    return post
+
 
 @router.put(
     "/{post_id}/",
     response_model=PostPublic,
     name="posts:update-post-by-id",
     status_code=status.HTTP_200_OK,
-    dependencies=[Depends(validate_post_modification_permissons)],  # posts dep
+    dependencies=[Depends(validate_post_modification_permissons)], 
 )
 async def update_post_by_id(
-    post: PostInDB = Depends(get_post_id_from_path),  # posts dependency
-    post_update: PostUpdate = Body(..., embed=True),  # json embedded model
+    post: PostInDB = Depends(get_post_id_from_path),  
+    post_update: PostUpdate = Body(..., embed=True),  
     posts_repo: PostsRepository = Depends(get_repository(PostsRepository)),
 ) -> PostPublic:
     """
     Protected route for updating a post. Requires that the current user has valid modify permissions (e.g. is the *owner* of this post)
     """
-
-    # thanks to dependencies we now have
-    # postID
-    # currentuser has permission to edit
-    # a model to supply to the database
-    # a repo that handles the db requests and takes said model
-
-    # pass model to repo
 
     post = await posts_repo.update_post_by_id(post=post, post_update=post_update)
 

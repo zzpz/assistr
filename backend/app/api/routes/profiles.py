@@ -34,7 +34,7 @@ async def get_own_profile(
     profile = await profiles_repo.get_profile_by_user_id(user_id=uid)
 
     return profile
-    
+
 
 @router.get(
     "/{user_id}/",  # this seems bad unless we use UUID.
@@ -74,7 +74,35 @@ async def update_own_profile(
 ) -> ProfilePublic:
     """
     # UNTESTED
-    # does nothing
+
+    Given the current user, updates their profile.
     """
 
-    return None
+    # update current user's profile
+    # current user is determined already by routing
+    # we have an embedded 'ProfileUpdate model in the body of the json received'
+
+    # profile exists (it should if user exists)
+
+    current_profile = await profiles_repo.get_profile_by_user_id(
+        user_id=current_user.id
+    )
+
+    if not current_profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No profile found for that user.",
+        )
+
+    updated_profile = await profiles_repo.update_profile(
+        profile=current_profile,
+        profile_update=update_profile,
+    )
+
+    if not updated_profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No profile found for that user.",
+        )
+
+    return updated_profile
