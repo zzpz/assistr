@@ -30,9 +30,7 @@ cd frontend
 yarn run start
 ```
 
-  Then open your browser at http://localhost:3000
-
-  This will launch the app in your default web browser
+  This will launch the app in your default web browser at http://localhost:3000
 
 ### Google API Key ###
 This app requires the use of Google API Key for the following API's:
@@ -49,5 +47,5 @@ This app requires the use of Google API Key for the following API's:
 8. Go the the file '.env' in the './frontend' folder and paste the following ```REACT_APP_GOOGLE_API_KEY={Your API Key}```.
 9. You will need to setup billing on your account for this to work.
 
-### Capability ###
+### Testing ###
 1. Tested on Google Chrome, Firefox, Safari, Edge.
