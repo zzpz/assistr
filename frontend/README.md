@@ -1,70 +1,51 @@
-# Getting Started with Create React App
+# assistr #
+A web-app to help volunteers and organisations find each other
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Backend Requirements
+  * [Docker](https://www.docker.com/).
+  * [Docker Compose](https://docs.docker.com/compose/install/).
 
-## Available Scripts
+## Frontend Requirements ##
 
-In the project directory, you can run:
+Node v14.17.4 (best to use NVM to manage node version)  
+Yarn  
 
-### `npm start`
+If you havent used react before. I highly reccomend going through these docs: https://beta.reactjs.org/
+Once you have the correct version of node running, run ```yarn install``` to install the package dependanices.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Backend Development ##
+  
+  Start the backend by running command in root folder: docker-compose up -d --build
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+docker-compose up -d
+```
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Google API Key ###
+To use the google map API's, and the autocomplete, you must have your API
+key installed. This key should stay private.
 
-### `npm run build`
+1. Log in at https://console.cloud.google.com/.
+2. Using the 'Select a project' button in the header, create a new project.
+3. On the sidebar, navigate to 'APIs & Services>Dashboard'. 
+4. You may need to select the project you created. 
+5. On the dashboard, at the top, select 'Enable APIs and Services'
+6. From this API Library page, you can enable all the nessecary APIs you need.
+7. Go to the 'Credentials' page through sidebar and create an API Key. 
+8. Go the the file '.env' in the root folder and paste the following ```GOOGLE_MAPS_API_KEY={Your API Key}```.
+9. You will need to setup billing on your account for this to work.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Nathan currently has Directions, Places, Geocoding and Distance Matrix APIs enabled. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## How to run ##
+Ensure you have gone through the steps in enviroment setup. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+cd into the UQ-Pool directory and run ```yarn start``` from your terminal and scan the QR code on your phone.
 
-### `npm run eject`
+## Adding dependancies ###
+When you use a package, ensure that it getts added to the package.json file by running ```yarn add [package-name]```. This is done in place of ```npm install``` as well. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Versions ###
+1. Node v14.17.4 (LTS)
+2. Tested on Android 11.0x86 Pixel 4
