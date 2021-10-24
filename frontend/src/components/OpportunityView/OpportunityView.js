@@ -18,7 +18,7 @@ const StyledEuiPage = styled(EuiPage)`
 
 function OpportunityView({
   isLoading,
-  cleaningError,
+  postsError,
   currentPost,
   fetchPostById,
   clearCurrentOpportunity
@@ -56,7 +56,7 @@ function OpportunityView({
 export default connect(
   (state) => ({
     isLoading: state.posts.isLoading,
-    cleaningError: state.posts.error,
+    postsError: state.posts.error,
     currentPost: state.posts.currentPost
   }),
   {

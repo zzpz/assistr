@@ -14,7 +14,8 @@ import {
   OrgProfileEdit,
   ProfileRoute,
   OrgProfilePage,
-  OrgOpportunities
+  OrgOpportunities,
+  Org0pportunities
 } from "../../components"
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
             />
           <Route path="/org-profile" element={<OrgProfilePage />} />
           <Route path="/org-profile/createdOpportunities" element={<OrgOpportunities />} />
+          <Route path="/org-profile/created0pportunities" element={<Org0pportunities />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

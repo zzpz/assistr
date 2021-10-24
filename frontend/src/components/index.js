@@ -26,5 +26,7 @@ export { default as OpportunityViewCard } from "./OpportunityViewCard/Opportunit
 export { default as MapView } from "./MapView/MapView"
 export { default as OrgOpportunityView } from "./OrgOpportunityView/OrgOpportunityView"
 export { default as OrgOpportunities } from "./OrgOpportunities/OrgOpportunities"
+export { default as Org0pportunities } from "./OrgOpportunities/Org0pportunities"
+export { default as OrgOpportunityApplicants } from "./OrgOpportunityApplicants/OrgOpportunityApplicants"
 
-
+export { default as OrgOpportunityViewCard } from "./OrgOpportunityViewCard/OrgOpportunityViewCard"

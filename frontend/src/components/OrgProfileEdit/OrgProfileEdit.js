@@ -112,7 +112,7 @@ function OrgProfileEdit ({ user, opportunityError, isLoading, updateProfile }) {
     if (res?.data) {
       console.log("YAY")
 
-      navigate(`/profile`)
+      navigate(`/org-profile`)
       // redirect user to new cleaning job post
     }
   }

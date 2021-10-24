@@ -103,7 +103,7 @@ function OpportunityCreateForm ({ user, opportunityError, isLoading, createOppor
     })
     if (res?.data) {
       const opportunityId = res.data.id
-      navigate(`/opportunities/${opportunityId}`)
+      navigate(`/opportunities/org/${opportunityId}`)
       // redirect user to new cleaning job post
     }
   }

@@ -25,6 +25,12 @@ GET_POST_BY_ID_QUERY = """
     WHERE id = :id;
 """
 
+GET_POST_BY_USER_ID_QUERY = """
+    SELECT id, org_id, title, short_desc, long_desc, image, location, is_published, created_at, updated_at
+    FROM posts
+    WHERE org_id = :org_id;
+"""
+
 LIST_POSTS_BY_CREATED_QUERY = """
     SELECT id, org_id, title, short_desc, location, is_published,created_at, updated_at
     FROM posts
@@ -74,6 +80,22 @@ class PostsRepository(BaseRepository):
 
         # unpack into a postInDB model
         return PostInDB(**post)
+
+    # async def get_posts_by_user_id(
+    #     self, *, org_id: int, requesting_user: UserInDB
+    # ) -> PostInDB:
+    #     """
+    #     Retrieve a post given its ID and requesting user.
+    #     """
+
+    #     post = await self.db.fetch_one(
+    #         query=GET_POST_BY_ID_QUERY, values={"id": post_id}
+    #     )
+
+    #     if not post:
+    #         return None
+
+    #     return PostInDB(**post)
 
     async def list_posts_by_created_at(
         self, *, offset: int, limit: int

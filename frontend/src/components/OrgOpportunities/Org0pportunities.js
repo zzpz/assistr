@@ -10,12 +10,15 @@ import {
   EuiPageContentBody,
   EuiPageHeader,
   EuiPageHeaderSection,
-  EuiButton,
+  EuiTitle,
   EuiText,
   EuiKeyPadMenu,
   EuiKeyPadMenuItem,
   EuiFlexGroup,
-  EuiFlexItem
+  EuiFlexItem,
+  EuiButton,
+  EuiButtonIcon,
+  EuiCard
 } from "@elastic/eui"
 import moment from "moment"
 import styled from "styled-components"
@@ -51,8 +54,10 @@ const StyledProfileSubsection = styled(EuiPageContent)`
   align-items: center;
   justify-content: center;
   margin: 50px;
+  min-width: 500px;
+  min-height: 500px;
+  background-color: #FF5733;
 `
-
 const StyledKeyPadMenu = styled(EuiKeyPadMenu)`
   display: flex;
   flex-direction: vertical;
@@ -69,7 +74,6 @@ const ProfileContainer = styled.div`
   align-self: center;
   align-items: center;
 `
-
 const StyledProfileSubsection1 = styled(EuiPageContent)`
   display: flex;
   flex-direction: column;
@@ -79,16 +83,31 @@ const StyledProfileSubsection1 = styled(EuiPageContent)`
   margin: 50px;
   align-self: left;
 `
-
-const ProfileCard = styled(EuiFlexItem)`
-  align-items: center;
-  justify-content: center;
+const StyledStartButton = styled(EuiButton)`
+  border-radius: 10px;
+  margin-top: 18px;
 `
 
+const cardFooterContent = (
+    <EuiFlexGroup justifyContent="spaceAround">
+      <EuiFlexItem grow={false}>
+        <EuiButton href="/opportunities/org/1">Manage</EuiButton>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+);
+
+const cardCreateContent = (
+    <EuiFlexGroup justifyContent="center">
+      <EuiFlexItem grow={false}>
+        <EuiButtonIcon iconSize="l" iconType="plusInCircleFilled"/>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+);
+
+const date = new Date().toDateString();
 
 
-
-function OrgProfilePage({ user }) {
+function Org0pportunities({ user }) {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
@@ -103,7 +122,7 @@ function OrgProfilePage({ user }) {
                 <EuiText>My Profile</EuiText>
                 <StyledKeyPadMenu>
                     
-                  <EuiKeyPadMenuItem isSelected label="Me" href="/org-profile">
+                  <EuiKeyPadMenuItem label="Me" href="/profile">
                       <EuiIcon type="user" size="l" />
                   </EuiKeyPadMenuItem>
 
@@ -111,7 +130,7 @@ function OrgProfilePage({ user }) {
                       <EuiIcon type="heart" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Opportunities" href="/org-profile/createdOpportunities">
+                  <EuiKeyPadMenuItem isSelected label="Opportunities" href="/opportunities/create">
                       <EuiIcon type="accessibility" size="l" />
                   </EuiKeyPadMenuItem>
                 </StyledKeyPadMenu>
@@ -121,44 +140,34 @@ function OrgProfilePage({ user }) {
             </EuiFlexItem>
             <EuiFlexItem grow={3}>
             <StyledProfileSubsection verticalPosition="center" horizontalPosition="center">
-
-              <StyledEuiPageContentBody>
+                <EuiText> <h3>Create and Manage your Opportunities</h3></EuiText>
                 <EuiFlexGroup direction="column">
-                  <EuiFlexItem>
-                    <EuiButton href="edit-profile">Edit Profile</EuiButton>
-                  </EuiFlexItem>
-                  <ProfileCard>
-                    <EuiAvatar
-                    size="xl"
-                    name={user.first || user.username || "Anonymous"}
-                    initialsLength={2}
-                    imageUrl={user.image}
-                    />
-                  
-                    <EuiText>
-                    <p>
-                        <EuiIcon type="user" />{" "}
-                        {user.first || user.org_name}
-                    </p>
-                    <p>
-                        <EuiIcon type="number" />{" "}
-                        {user.phone ? user.phone : "No phone number added"}
-                    </p>
-                    <p>
-                        <EuiIcon type="clock" /> Member since {moment(user.created_at).format("MM-DD-YYYY")}
-                    </p>
-                    <p>
-                        <EuiIcon type="mapMarker" /> {user.org_loc}
-                    </p>
-                    <EuiHorizontalRule />
-                    <p>
-                        <EuiIcon type="quote" />{" "}
-                        {user.bio ? user.bio : "This user hasn't written a bio yet"}
-                    </p>
-                    </EuiText>
-                  </ProfileCard>
-                </EuiFlexGroup>    
-              </StyledEuiPageContentBody>
+                    <EuiFlexItem grow={1}>
+                        <EuiCard
+                            textAlign="left"
+                            image={
+                            <div>
+                                <img
+                                src="https://source.unsplash.com/400x200/?Nature"
+                                alt="Nature"
+                                />
+                            </div>
+                            }
+                            title="Test Opportunity"
+                            description={date}
+                            footer={cardFooterContent}
+                        />
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={1}>
+                        <EuiCard
+                            textAlign="center"
+                            
+                            title="Create more"
+                            footer={cardCreateContent}
+                        />
+
+                    </EuiFlexItem>
+                </EuiFlexGroup>
             </StyledProfileSubsection>
 
             </EuiFlexItem>
@@ -172,5 +181,5 @@ function OrgProfilePage({ user }) {
   )
 }
 
-export default connect((state) => ({ user: state.auth.user }))(OrgProfilePage)
+export default connect((state) => ({ user: state.auth.user }))(Org0pportunities)
 
