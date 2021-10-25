@@ -20,8 +20,11 @@ import loginIcon from "../../assets/img/icon.svg"
 import styled from "styled-components"
 import logoIconAsReactSVGComponent from "../IconHacks/login"
 
-const LogoSection = styled(EuiHeaderLink)`
-  padding: 0 2rem;
+const LogoSection = styled(EuiHeaderSection)`
+  padding: 0 0;
+`
+const MainLogo = styled(EuiIcon)`
+  margin-bottom: 4px;
 `
 
 const AvatarMenu = styled.div`
