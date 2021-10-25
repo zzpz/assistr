@@ -38,7 +38,7 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 
 
-export default function OpportunityViewCard({ post, user}) {
+export default function OpportunityViewCard({ post, opportunity_id}) {
   const [latLong, setAddress] = React.useState("")
 
   const defaultProps = {
@@ -49,6 +49,24 @@ export default function OpportunityViewCard({ post, user}) {
     zoom: 11
   };
 
+  var yo = (
+    <div>
+    </div>
+  )
+
+  if (opportunity_id == 2) {
+    yo = (
+      <div>
+      <EuiTitle><h1>{post.title}</h1></EuiTitle>
+      <EuiText>{post.short_desc}</EuiText>
+      <EuiHorizontalRule />
+      <EuiText>{post.long_desc}</EuiText>
+      <EuiHorizontalRule />
+      <EuiText>Location</EuiText>
+      <EuiText>{post.location}</EuiText>
+    </div>
+    )
+  }
 
   const title = (
       <div>
@@ -121,7 +139,7 @@ export default function OpportunityViewCard({ post, user}) {
               </EuiFlexItem>
          </EuiFlexGroup>
          <EuiFlexGroup>
-             <EuiFlexItem><EuiPanel>{title}</EuiPanel></EuiFlexItem>
+             <EuiFlexItem><EuiPanel>{yo}</EuiPanel></EuiFlexItem>
              <EuiFlexItem><EuiPanel><GoogleMapReact
                 bootstrapURLKeys={{ key: "AIzaSyAmn1Hymc4MuHy1zyvQsnTz64Jl-BFOTaQ" }}
                 defaultCenter={defaultProps.center}

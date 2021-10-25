@@ -46,7 +46,7 @@ function OpportunityView({
         <EuiPageContent verticalPosition="center" horizontalPosition="center" paddingSize="none">
           <EuiPageContentBody>
             
-            <OpportunityViewCard post={currentPost} />
+            <OpportunityViewCard post={currentPost} opportunity_id={opportunity_id} />
 
           </EuiPageContentBody>
         </EuiPageContent>

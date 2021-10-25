@@ -108,7 +108,7 @@ export default function OrgOpportunityViewCard({ post, user}) {
                       image={
                         <div>
                           <img
-                            src="http://172.18.0.4:8080/4,06d512ad1d"
+                            src="http://172.19.0.4:8080/1,01d2a24f1e"
                           />
                         </div>
                       }
@@ -136,18 +136,22 @@ export default function OrgOpportunityViewCard({ post, user}) {
          </EuiFlexGroup>
          <EuiFlexGroup>
              <EuiFlexItem><EuiPanel>{title}</EuiPanel></EuiFlexItem>
-             <EuiFlexItem><EuiPanel><GoogleMapReact
-                bootstrapURLKeys={{ key: "AIzaSyAmn1Hymc4MuHy1zyvQsnTz64Jl-BFOTaQ" }}
-                defaultCenter={defaultProps.center}
-                defaultZoom={defaultProps.zoom}
-              >
-                <AnyReactComponent
-                  lat={35.6761919}
-                  lng={139.6503106}
-                  text="My Marker"
-                />
-        </GoogleMapReact></EuiPanel></EuiFlexItem>
-         </EuiFlexGroup>
+             <EuiFlexItem>
+               <EuiPanel>
+                 <GoogleMapReact
+                    bootstrapURLKeys={{ key: "AIzaSyAmn1Hymc4MuHy1zyvQsnTz64Jl-BFOTaQ" }}
+                    defaultCenter={defaultProps.center}
+                    defaultZoom={defaultProps.zoom}
+                  >
+                  <AnyReactComponent
+                    lat={35.6761919}
+                    lng={139.6503106}
+                    text="My Marker"
+                  />  
+                </GoogleMapReact>
+        </EuiPanel>
+        </EuiFlexItem>
+        </EuiFlexGroup>
      </CardContainer>
         
 
