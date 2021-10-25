@@ -20,13 +20,16 @@ import {
   EuiPageContent,
   EuiPageContentBody,
   EuiPageHeaderSection,
-  EuiTitle
+  EuiTitle,
+  EuiSelect
 } from "@elastic/eui"
 import validation from "../../utils/validation"
 import styled from "styled-components"
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
+  background: rgb(0,75,103);
+background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
 `
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
@@ -87,6 +90,20 @@ function OrgProfileEdit ({ user, opportunityError, isLoading, updateProfile }) {
     setForm((form) => ({ ...form, ['org_loc']: value }))
   }
 
+  const options = [
+    { value: 'Wildlife', text: 'Wildlife' },
+    { value: 'Religious', text: 'Religious' },
+    { value: 'Education', text: 'Education' },
+    
+  ];
+  const [value, setSelect] = React.useState(options[1].value);
+
+
+  const onSelectChange = (e) => {
+    setSelect(e.target.value);
+    localStorage.setItem("org_type", e.target.value)
+  };
+
   const handleSubmit = async (e) => {
     console.log("BRO WHAT")
 
@@ -141,12 +158,24 @@ function OrgProfileEdit ({ user, opportunityError, isLoading, updateProfile }) {
                 >
                   <EuiFieldText
                     name="org_name"
-                    placeholder="First"
+                    placeholder="Name"
                     value={form.first}
                     onChange={(e) => onInputChange(e.target.name, e.target.value)}
                   />
                 </EuiFormRow>
-
+                <EuiFormRow
+                  label="Organisation Type"
+                  error={`Please enter a valid name.`}
+                >
+                  <EuiSelect
+                    id="selectType"
+                    options={options}
+                    value={value}
+                    onChange={(e) => onSelectChange(e)}
+                    aria-label="Use aria labels when no actual label is in use"
+                  />
+                </EuiFormRow>
+                
                 <EuiFormRow
                   label="Location"
                   error={`Please enter a valid name.`}
@@ -168,6 +197,7 @@ function OrgProfileEdit ({ user, opportunityError, isLoading, updateProfile }) {
                           </StyledLocationSearch>
                         </div>)}
                     </PlacesAutoComplete>
+                     
                   </div>
                 </EuiFormRow>
 

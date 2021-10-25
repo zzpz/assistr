@@ -10,13 +10,15 @@ import "../../assets/css/override.css"
 const customTheme = {
   ...euiVars,
   euiTitleColor: "dodgerblue",
+  euiColorPrimary: "dodgerblue",
 }
 
 const StyledLayout = styled.div`
   width: 100%;
   max-width: 100vw;
   min-height: 100vh;
-  background: rgb(224, 228, 234);
+  background: rgb(0,75,103);
+  background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
   display: flex;
   flex-direction: column;
 `

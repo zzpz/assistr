@@ -10,7 +10,6 @@ export const FETCH_POST_BY_ID_SUCCESS = "@@cleanings/FETCH_POST_BY_ID_SUCCESS"
 export const FETCH_POST_BY_ID_FAILURE = "@@cleanings/FETCH_POST_BY_ID_FAILURE"
 export const CLEAR_CURRENT_OPPORTUNITY = "@@cleanings/CLEAR_CURRENT_OPPORTUNITY"
 
-
 export default function postsReducer(state = initialState.posts, action = {}) {
   switch (action.type) {
     case CREATE_POST:

@@ -151,6 +151,7 @@ Actions.fetchUserFromToken = (access_token) => {
 Actions.logUserOut = () => {
   localStorage.removeItem("access_token")
   localStorage.removeItem("is_org")
+  localStorage.removeItem("visited_applicants")
 
   return {
     type: REQUEST_LOG_USER_OUT

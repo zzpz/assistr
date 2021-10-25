@@ -27,6 +27,9 @@ const StyledEuiPage = styled(EuiPage)`
   
   display: flex;
   flex-direction: horizontal;
+  background: rgb(0,75,103);
+background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
+  
 `
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
@@ -140,7 +143,7 @@ function Org0pportunities({ user }) {
             </EuiFlexItem>
             <EuiFlexItem grow={3}>
             <StyledProfileSubsection verticalPosition="center" horizontalPosition="center">
-                <EuiText> <h3>Create and Manage your Opportunities</h3></EuiText>
+                <EuiText> <h3>Manage your Opportunities</h3></EuiText>
                 <EuiFlexGroup direction="column">
                     <EuiFlexItem grow={1}>
                         <EuiCard
@@ -148,7 +151,7 @@ function Org0pportunities({ user }) {
                             image={
                             <div>
                                 <img
-                                src="https://source.unsplash.com/400x200/?Nature"
+                                src="http://172.18.0.4:8080/4,06d512ad1d"
                                 alt="Nature"
                                 />
                             </div>

@@ -42,11 +42,6 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 export default function OrgOpportunityViewCard({ post, user}) {
   const [latLong, setAddress] = React.useState("")
 
-  const image = (
-    <ImageHolder>
-      
-    </ImageHolder>
-  )
 
   const defaultProps = {
     center: {
@@ -108,12 +103,16 @@ export default function OrgOpportunityViewCard({ post, user}) {
         </EuiFlexGroup>
         <EuiFlexGroup>
               <EuiFlexItem grow={3}>
-                  <EuiPanel>
-                    <EuiImage hasShadow
-                    allowFullScreen
-                    size="fillWidth"
-                    src="https://source.unsplash.com/400x200/?Soap"/>
-                  </EuiPanel>
+                  <EuiCard
+                      textAlign="left"
+                      image={
+                        <div>
+                          <img
+                            src="http://172.18.0.4:8080/4,06d512ad1d"
+                          />
+                        </div>
+                      }
+                    />
               </EuiFlexItem>
              <EuiFlexItem alignItems="spaceAround"> 
                <EuiPanel paddingSize="l" alignItems="spaceAround">

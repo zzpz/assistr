@@ -109,12 +109,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
         isInvalid={Boolean(errors.form)}
         error={[errors.form]}
       >
-        <EuiFormRow
-          label="Are you an Organisation?"
-        >
-          <EuiLink href="registration/org">Click here to find out more</EuiLink>
-           
-        </EuiFormRow>
+        
         <EuiFormRow
           label="Email"
           helpText="Enter the email associated with your account."

@@ -45,7 +45,6 @@ function OrgOpportunityApplicants({
   clearCurrentOpportunity
 }) {
   const { opportunity_id } = useParams()
-  const [show, setShow] = React.useState(true)
 
   React.useEffect(() => {
     if (opportunity_id) {
@@ -59,39 +58,31 @@ function OrgOpportunityApplicants({
   if (!currentPost) return <EuiLoadingSpinner size="xl" />
   if (!currentPost?.title) return <NotFoundPage />
 
-  console.log(currentPost)
-  
-  const handleClick = () => {
-    localStorage.setItem("visited_applicants", "true");
-  }
+  console.log(currentPost);
 
-  if (localStorage.getItem("visited_applicants") == "true") {
 
-  return (
-    <StyledEuiPage>
-      <EuiPageBody component="section">
-        <EuiPageContent verticalPosition="center" horizontalPosition="center" paddingSize="none">
-          <EuiPageContentBody>
-            <CardContainer>
-            <EuiFlexGroup >
-                <EuiFlexItem grow={3}>
-                    <EuiPanel>
-                        <EuiFlexGroup justifyContent="spaceBetween">
-                        <EuiFlexItem grow={false}>
-                            <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1" onClick={handleClick}>My Opportunities</EuiButton>
-                        </EuiFlexItem>
-                        <EuiFlexItem grow={false}>
-                            <EuiButton>Switch to Volunteer View</EuiButton>
-                        </EuiFlexItem>
-                        </EuiFlexGroup>
-                    </EuiPanel>
-                </EuiFlexItem>
-                </EuiFlexGroup>
-                <EuiFlexGroup>
-                    <EuiFlexItem grow={3}>
-                            <EuiFlexGroup direction="column">
-                                <EuiFlexItem>
-                                    <EuiPanel className="showApplicant">
+
+  const ShowApplicant = ({}) => {
+    const [show, setShow] = React.useState(true)
+    React.useEffect(() => {
+        const timeId = setTimeout(() => {
+          // After 3 seconds set the show value to false
+          setShow(false)
+        }, 3000)
+    
+        return () => {
+          clearTimeout(timeId)
+        }
+      }, []);
+
+      if (!show) {
+        return null;
+      }
+    
+      // If show is true this will be returned
+      return (
+        <div>
+          <EuiPanel className="showApplicant">
                                         <EuiFlexGroup alignItems="center">
                                             <EuiFlexItem>
                                                 <EuiAvatar
@@ -107,41 +98,11 @@ function OrgOpportunityApplicants({
                                             </EuiFlexItem>
                                         </EuiFlexGroup>
                                     </EuiPanel>
-                                </EuiFlexItem>
-                                <EuiFlexItem>
-                                </EuiFlexItem>
-                            </EuiFlexGroup>
-                    </EuiFlexItem>
-                    <EuiFlexItem alignItems="spaceAround"> 
-                    <EuiPanel paddingSize="l" alignItems="spaceAround">
-                        <EuiFlexGrid columns={1}>
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                        <EuiText padding="5px" textAlign="center">Manage This Opportunity</EuiText>
-                        
-                        </EuiFlexItem> 
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                            <EuiButton href="/opportunities/org/1/applicants">View Applicants</EuiButton>
-                        
-                        </EuiFlexItem> 
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                            <EuiButton>Edit Item</EuiButton>
-                        
-                        </EuiFlexItem> 
-                        </EuiFlexGrid>
-                    
-                    </EuiPanel>
-                    </EuiFlexItem>
-                </EuiFlexGroup>
-               
-            </CardContainer>
+        </div>
+      )
+    }   
 
-          </EuiPageContentBody>
-        </EuiPageContent>
-      </EuiPageBody>
-    </StyledEuiPage>
-  )
-    
-  }
+
 
   return (
     <StyledEuiPage>
@@ -154,7 +115,7 @@ function OrgOpportunityApplicants({
                     <EuiPanel>
                         <EuiFlexGroup justifyContent="spaceBetween">
                         <EuiFlexItem grow={false}>
-                            <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1" onClick={handleClick}>My Opportunities</EuiButton>
+                            <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1">My Opportunities</EuiButton>
                         </EuiFlexItem>
                         <EuiFlexItem grow={false}>
                             <EuiButton>Switch to Volunteer View</EuiButton>
@@ -167,7 +128,7 @@ function OrgOpportunityApplicants({
                     <EuiFlexItem grow={3}>
                             <EuiFlexGroup direction="column">
                                 <EuiFlexItem>
-                                    {show}
+                                    
                                 </EuiFlexItem>
                                 <EuiFlexItem>
                                 </EuiFlexItem>

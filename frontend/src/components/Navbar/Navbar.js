@@ -18,6 +18,7 @@ import {
 import { Link, useNavigate } from "react-router-dom"
 import loginIcon from "../../assets/img/icon.svg"
 import styled from "styled-components"
+import logoIconAsReactSVGComponent from "../IconHacks/login"
 
 const LogoSection = styled(EuiHeaderLink)`
   padding: 0 2rem;
@@ -105,14 +106,11 @@ function Navbar({ auth, logUserOut, ...props }) {
       <EuiHeaderSection>
         <EuiHeaderSectionItem border="right">
           <LogoSection href="/">
-            <EuiIcon type="cloudDrizzle" color="#1E90FF" size="l" /> Phresh
+            <EuiIcon type={logoIconAsReactSVGComponent} color="#1E90FF" size="l" /> 
           </LogoSection>
         </EuiHeaderSectionItem>
         <EuiHeaderSectionItem border="right">
           <EuiHeaderLinks aria-label="app navigation links">
-            <EuiHeaderLink iconType="tear" href="#">
-              Find Cleaners
-            </EuiHeaderLink>
 
             <EuiHeaderLink iconType="tag" onClick={() => navigate("/opportunities")}>  
               Find Opportunities

@@ -24,6 +24,8 @@ const StyledEuiPage = styled(EuiPage)`
   
   display: flex;
   flex-direction: horizontal;
+  background: rgb(0,75,103);
+background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
 `
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
@@ -85,7 +87,7 @@ const ProfileCard = styled(EuiFlexItem)`
   justify-content: center;
 `
 
-
+const orgType = localStorage.getItem("org_type")
 
 
 function OrgProfilePage({ user }) {
@@ -107,8 +109,8 @@ function OrgProfilePage({ user }) {
                       <EuiIcon type="user" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Saved" href="/opportunities">
-                      <EuiIcon type="heart" size="l" />
+                  <EuiKeyPadMenuItem label="Chat" href="/chat">
+                      <EuiIcon type="email" size="l" />
                   </EuiKeyPadMenuItem>
 
                   <EuiKeyPadMenuItem label="Opportunities" href="/org-profile/createdOpportunities">
@@ -119,7 +121,7 @@ function OrgProfilePage({ user }) {
               </StyledProfileSubsection1>
 
             </EuiFlexItem>
-            <EuiFlexItem grow={3}>
+            <EuiFlexItem grow={2}>
             <StyledProfileSubsection verticalPosition="center" horizontalPosition="center">
 
               <StyledEuiPageContentBody>
@@ -141,6 +143,10 @@ function OrgProfilePage({ user }) {
                         {user.first || user.org_name}
                     </p>
                     <p>
+                        <EuiIcon type="apps" />{" "}
+                        {orgType}
+                    </p>
+                    <p>
                         <EuiIcon type="number" />{" "}
                         {user.phone ? user.phone : "No phone number added"}
                     </p>
@@ -151,7 +157,7 @@ function OrgProfilePage({ user }) {
                         <EuiIcon type="mapMarker" /> {user.org_loc}
                     </p>
                     <EuiHorizontalRule />
-                    <p>
+                    <p className="bio">
                         <EuiIcon type="quote" />{" "}
                         {user.bio ? user.bio : "This user hasn't written a bio yet"}
                     </p>

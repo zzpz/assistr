@@ -28,5 +28,8 @@ export { default as OrgOpportunityView } from "./OrgOpportunityView/OrgOpportuni
 export { default as OrgOpportunities } from "./OrgOpportunities/OrgOpportunities"
 export { default as Org0pportunities } from "./OrgOpportunities/Org0pportunities"
 export { default as OrgOpportunityApplicants } from "./OrgOpportunityApplicants/OrgOpportunityApplicants"
-
 export { default as OrgOpportunityViewCard } from "./OrgOpportunityViewCard/OrgOpportunityViewCard"
+export { default as Org0pportunitiesStatic } from "./OrgOpportunities/Org0pportunitiesStatic"
+export { default as OrgOpportunitiesStaticAfter } from "./OrgOpportunities/OrgOpportunitiesStaticAfter"
+export { default as Chat } from "./Chat/Chat"
+export { default as ChatOrg } from "./Chat/ChatOrg"

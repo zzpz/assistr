@@ -1,25 +1,11 @@
-# assistr #
-A web-app to help volunteers and organisations find each other
-
-## Backend Requirements
-  * [Docker](https://www.docker.com/).
-  * [Docker Compose](https://docs.docker.com/compose/install/).
-
 ## Frontend Requirements ##
 
 Node v14.17.4 (best to use NVM to manage node version)  
 Yarn  
 
-If you havent used react before. I highly reccomend going through these docs: https://beta.reactjs.org/
-Once you have the correct version of node running, run ```yarn install``` to install the package dependanices.
+If you havent used react before. I reccomend reading through this documentation: https://beta.reactjs.org/
 
-## Backend Development ##
-  
-  Start the backend by running command in root folder: 
-```bash
-docker-compose up -d --build
-```
-  You can now open the browser and interact with the api documentation at: http://localhost:8000/docs
+Once you have the correct version of node running, run ```yarn install``` to install the package dependanices.
 
 ## Frontend Development ##
 

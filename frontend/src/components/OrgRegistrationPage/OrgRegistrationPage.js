@@ -13,6 +13,8 @@ import styled from "styled-components"
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
+  background: rgb(0,75,103);
+background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
 `
 const StyledEuiPageHeader = styled(EuiPageHeader)`
   display: flex;
@@ -31,9 +33,6 @@ export default function OrgRegistrationPage() {
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-            <EuiTitle size="l">
-              <h1>Sign Up as Org</h1>
-            </EuiTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">

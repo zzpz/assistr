@@ -31,7 +31,6 @@ const ImageHolder = styled.div`
 `
 const CardContainer = styled.div`
   width: 85vw;
-  height: 1000px;
   padding: 10px;
 `
 
@@ -42,12 +41,6 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 export default function OpportunityViewCard({ post, user}) {
   const [latLong, setAddress] = React.useState("")
 
-  const image = (
-    <ImageHolder>
-      
-    </ImageHolder>
-  )
-
   const defaultProps = {
     center: {
       lat: 27.4843,
@@ -55,6 +48,7 @@ export default function OpportunityViewCard({ post, user}) {
     },
     zoom: 11
   };
+
 
   const title = (
       <div>
@@ -89,13 +83,17 @@ export default function OpportunityViewCard({ post, user}) {
   return (
     <CardContainer>
          <EuiFlexGroup>
-              <EuiFlexItem grow={3}>
-                  <EuiPanel>
-                    <EuiImage hasShadow
-                    allowFullScreen
-                    size="fillWidth"
-                    src="https://source.unsplash.com/400x200/?Soap"/>
-                  </EuiPanel>
+         <EuiFlexItem grow={3}>
+                  <EuiCard
+                      textAlign="left"
+                      image={
+                        <div>
+                          <img
+                            src="http://172.18.0.4:8080/4,06d512ad1d"
+                          />
+                        </div>
+                      }
+                    />
               </EuiFlexItem>
              <EuiFlexItem>
                <EuiPanel paddingSize="l">
