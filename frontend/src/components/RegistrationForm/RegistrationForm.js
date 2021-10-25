@@ -6,7 +6,8 @@ import {
   EuiForm,
   EuiFormRow,
   EuiFieldPassword,
-  EuiSpacer
+  EuiSpacer,
+  EuiLink
 } from "@elastic/eui"
 import { Link } from "react-router-dom"
 import validation from "../../utils/validation"
@@ -31,12 +32,13 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
   })
   const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [errors, setErrors] = React.useState({})
+
   const navigate = useNavigate()
 
     // if the user is already authenticated, redirect them to the "/profile" page
   React.useEffect(() => {
-    if (user?.email && isAuthenticated) {
-      navigate("/profile")
+    if (isAuthenticated) {
+      navigate("/edit-profile")
     }
   }, [user, navigate, isAuthenticated])
 
@@ -107,6 +109,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
         isInvalid={Boolean(errors.form)}
         error={[errors.form]}
       >
+        
         <EuiFormRow
           label="Email"
           helpText="Enter the email associated with your account."

@@ -28,11 +28,9 @@ export function validatePassword(password, length = 7) {
 export function validateUsername(username) {  
     return /^[a-zA-Z0-9_-]+$/.test(username) 
 } 
-  
+
 export default {
     email: validateEmail,
     password: validatePassword,
-    username: validateUsername 
+    username: validateUsername,
 }
-  
-  

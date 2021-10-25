@@ -1,6 +1,6 @@
 import React from "react"
 import { EuiGlobalToastList, EuiLoadingSpinner } from "@elastic/eui"
-import { LoginPage } from "../../components"
+import { LoginPage, OrgProfilePage, ProfilePage } from "../../components"
 import { connect } from "react-redux"
 
 function ProtectedRoute({
@@ -22,8 +22,10 @@ function ProtectedRoute({
       text: <p>{redirectMessage}</p>
     }
   ])
-  if (!userLoaded) return <EuiLoadingSpinner size="xl" />
+  // if (!userLoaded) return <EuiLoadingSpinner size="xl" />
   const isAuthed = isAuthenticated && Boolean(user?.user_id)
+  const isOrg = localStorage.getItem("is_org")
+
 
   if (!isAuthed) {
     return (
@@ -40,7 +42,13 @@ function ProtectedRoute({
     )
   }
 
-  return <Component {...props} />
+  if (isOrg == "true") {
+    
+    return <OrgProfilePage />
+
+  }
+
+  return <ProfilePage />
 }
 
 export default connect((state) => ({

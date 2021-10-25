@@ -56,5 +56,4 @@ function Icon() {
         </svg>
     );
 }
-
 export default Icon;

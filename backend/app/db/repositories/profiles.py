@@ -70,7 +70,6 @@ class ProfilesRepository(BaseRepository):
     ) -> ProfileInDB:
         """
         Given a user_id and is_org we create a profile.
-
         # we don't create a profile really, we just kind of make an empty entry with id and update separately.
         """
 
@@ -108,7 +107,6 @@ class ProfilesRepository(BaseRepository):
     ) -> ProfileInDB:
         """
         Update a profile of a given user.
-
         # get the current profile
         # use that as the supplying values, overwrite with supplied updates
         # return
