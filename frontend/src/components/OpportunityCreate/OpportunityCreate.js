@@ -37,9 +37,7 @@ function OpportunityCreate({ user }) {
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-          <EuiTitle size="l">
-              <h1>Create an Opportunity</h1>
-            </EuiTitle>
+          
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         

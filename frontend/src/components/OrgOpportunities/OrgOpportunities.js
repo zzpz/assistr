@@ -107,7 +107,7 @@ function OrgOpportunities({ user }) {
                       <EuiIcon type="user" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Saved" href="/opportunities">
+                  <EuiKeyPadMenuItem label="Saved" href="profile/opportunities">
                       <EuiIcon type="heart" size="l" />
                   </EuiKeyPadMenuItem>
 

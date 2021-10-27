@@ -11,6 +11,7 @@ import {
 import { OpportunityViewCard, NotFoundPage, OpportunityHome } from "../../components"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import axios from "axios"
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -26,6 +27,8 @@ function OpportunityView({
   clearCurrentOpportunity
 }) {
   const { opportunity_id } = useParams()
+  const [org, setOrg] = React.useState("")
+
 
   React.useEffect(() => {
     if (opportunity_id) {
@@ -35,9 +38,34 @@ function OpportunityView({
     return () => clearCurrentOpportunity()
   }, [opportunity_id, fetchPostById, clearCurrentOpportunity])
 
+
+
+
   if (isLoading) return <EuiLoadingSpinner size="xl" />
   if (!currentPost) return <EuiLoadingSpinner size="xl" />
   if (!currentPost?.title) return <NotFoundPage />
+
+  // const fetchOrgById = () => {
+  //   const token = localStorage.getItem("access_token")
+  //   console.log("FETCIHING")
+  //   const res =  axios({
+  //     method: `GET`,
+  //     url: `http://localhost:8000/api/profiles/${ currentPost.org_id }`,
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`
+  //     },
+  //   }).then()
+  //   console.log("FETCIHING")
+  //   setOrg(res.data)
+  // }
+
+  // fetchOrgById()
+
+  // const orgg = axios.get(`http://localhost:8000/api/profiles/${ currentPost.org_id }`).then(res => setOrg(res));
+
+  console.log(org)
+            
 
   console.log(currentPost);
   return (
@@ -46,7 +74,7 @@ function OpportunityView({
         <EuiPageContent verticalPosition="center" horizontalPosition="center" paddingSize="none">
           <EuiPageContentBody>
             
-            <OpportunityViewCard post={currentPost} />
+            <OpportunityViewCard post={currentPost} opportunity_id={opportunity_id} />
 
           </EuiPageContentBody>
         </EuiPageContent>

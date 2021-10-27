@@ -260,3 +260,28 @@ Actions.updateOrgFromToken = ({org_name, org_loc, phone, bio}) => {
     }
   }
 }
+
+
+// 
+// Actions.fetchProfileById = ({ userId }) => {
+//   return async (dispatch) => {
+//     const token = localStorage.getItem("access_token")
+
+//     try {
+//       const res = await axios({
+//         method: `GET`,
+//         url: `http://localhost:8000/api/profiles/${ userId }`,
+//         data: {user_id},
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`
+//         },
+//       })
+//       console.log(res)
+//       return dispatch({ type: FETCH_POST_BY_ID_SUCCESS, data: res.data })
+//     } catch (error) {
+//       console.log(error)
+//       dispatch({ type: FETCH_POST_BY_ID_FAILURE, error })
+//     }
+//   }
+// }

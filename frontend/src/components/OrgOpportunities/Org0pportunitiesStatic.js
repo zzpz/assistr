@@ -22,6 +22,7 @@ import {
 } from "@elastic/eui"
 import moment from "moment"
 import styled from "styled-components"
+import koala from '../../assets/img/koala.jpg'
 
 const StyledEuiPage = styled(EuiPage)`
   
@@ -150,12 +151,12 @@ function Org0pportunitiesStatic({ user }) {
                             image={
                             <div>
                                 <img
-                                src="http://172.18.0.4:8080/4,06d512ad1d"
+                                src={koala}
                                 alt="Nature"
                                 />
                             </div>
                             }
-                            title="Test Opportunity"
+                            title="Bloom Festival"
                             description={date}
                             footer={cardFooterContent}
                         />

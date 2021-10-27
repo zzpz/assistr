@@ -115,7 +115,7 @@ function Navbar({ auth, logUserOut, ...props }) {
         <EuiHeaderSectionItem border="right">
           <EuiHeaderLinks aria-label="app navigation links">
 
-            <EuiHeaderLink iconType="tag" onClick={() => navigate("/opportunities")}>  
+            <EuiHeaderLink iconType="accessibility" onClick={() => navigate("/opportunities")}>  
               Find Opportunities
             </EuiHeaderLink>
 

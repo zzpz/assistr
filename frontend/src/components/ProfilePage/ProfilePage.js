@@ -10,7 +10,7 @@ import {
   EuiPageContentBody,
   EuiPageHeader,
   EuiPageHeaderSection,
-  EuiTitle,
+  EuiButton,
   EuiText,
   EuiKeyPadMenu,
   EuiKeyPadMenuItem,
@@ -63,7 +63,10 @@ const StyledKeyPadMenu = styled(EuiKeyPadMenu)`
   height 300px;
   flex: 2;
 `
-
+const ProfileCard = styled(EuiFlexItem)`
+  align-items: center;
+  justify-content: center;
+`
 const ProfileContainer = styled.div`
   display: flex;
   flex-direction: horizontal;
@@ -100,11 +103,11 @@ function ProfilePage({ user }) {
                       <EuiIcon type="user" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Saved" href="/opportunities">
+                  <EuiKeyPadMenuItem label="Saved" href="/profile/saved">
                       <EuiIcon type="heart" size="l" />
                   </EuiKeyPadMenuItem>
 
-                  <EuiKeyPadMenuItem label="Opportunities" href="#">
+                  <EuiKeyPadMenuItem label="Opportunities" href="/profile/myopportunities">
                       <EuiIcon type="accessibility" size="l" />
                   </EuiKeyPadMenuItem>
                 </StyledKeyPadMenu>
@@ -115,31 +118,39 @@ function ProfilePage({ user }) {
             <EuiFlexItem grow={3}>
             <StyledProfileSubsection verticalPosition="center" horizontalPosition="center">
 
-              <StyledEuiPageContentBody>
-                  <EuiAvatar
-                  size="xl"
-                  name={user.first || user.username || "Anonymous"}
-                  initialsLength={2}
-                  imageUrl={user.image}
-                  />
-                  <EuiText>
-                  <p>
-                      <EuiIcon type="user" />{" "}
-                      {user.first || user.org_name}
-                  </p>
-                  <p>
-                      <EuiIcon type="number" />{" "}
-                      {user.phone ? user.phone : "No phone number added"}
-                  </p>
-                  <p>
-                      <EuiIcon type="clock" /> Member since {moment(user.created_at).format("MM-DD-YYYY")}
-                  </p>
-                  <EuiHorizontalRule />
-                  <p>
-                      <EuiIcon type="quote" />{" "}
-                      {user.bio ? user.bio : "This user hasn't written a bio yet"}
-                  </p>
-                  </EuiText>
+            <StyledEuiPageContentBody>
+                <EuiFlexGroup direction="column">
+                  <EuiFlexItem>
+                    <EuiButton href="edit-profile">Edit Profile</EuiButton>
+                  </EuiFlexItem>
+                  <ProfileCard>
+                    <EuiAvatar
+                    size="xl"
+                    name={user.first || user.username || "Anonymous"}
+                    initialsLength={2}
+                    imageUrl={user.image}
+                    />
+                  
+                    <EuiText>
+                    <p>
+                        <EuiIcon type="user" />{" "}
+                        {user.first || user.org_name}
+                    </p>
+                    <p>
+                        <EuiIcon type="number" />{" "}
+                        {user.phone ? user.phone : "No phone number added"}
+                    </p>
+                    <p>
+                        <EuiIcon type="clock" /> Member since {moment(user.created_at).format("MM-DD-YYYY")}
+                    </p>
+                    <EuiHorizontalRule />
+                    <p className="bio">
+                        <EuiIcon type="quote" />{" "}
+                        {user.bio ? user.bio : "This user hasn't written a bio yet"}
+                    </p>
+                    </EuiText>
+                  </ProfileCard>
+                </EuiFlexGroup>    
               </StyledEuiPageContentBody>
             </StyledProfileSubsection>
 

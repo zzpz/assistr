@@ -33,3 +33,7 @@ export { default as Org0pportunitiesStatic } from "./OrgOpportunities/Org0pportu
 export { default as OrgOpportunitiesStaticAfter } from "./OrgOpportunities/OrgOpportunitiesStaticAfter"
 export { default as Chat } from "./Chat/Chat"
 export { default as ChatOrg } from "./Chat/ChatOrg"
+export { default as MyOpportunities } from "./MyOpportunities/MyOpportunities"
+export { default as Saved } from "./Saved/Saved"
+export { default as VolunteerProfileView } from "./VolunteerProfileView/VolunteerProfileView"
+export { default as OrgProfileView } from "./OrgProfileView/OrgProfileView"

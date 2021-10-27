@@ -139,9 +139,7 @@ function OrgProfileEdit ({ user, opportunityError, isLoading, updateProfile }) {
       <EuiPageBody component="section">
           <StyledEuiPageHeader>
             <EuiPageHeaderSection>
-              <EuiTitle size="l">
-                <h1>Edit Org Profile</h1>
-              </EuiTitle>
+              
             </EuiPageHeaderSection>
           </StyledEuiPageHeader>
           <EuiPageContent verticalPosition="center" horizontalPosition="center">
