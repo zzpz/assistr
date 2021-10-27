@@ -145,9 +145,7 @@ class ChatOrg extends Component {
                               <EuiFlexItem grow={false}>
                                   <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1" >My Opportunities</EuiButton>
                               </EuiFlexItem>
-                              <EuiFlexItem grow={false}>
-                                  <EuiButton>Switch to Volunteer View</EuiButton>
-                              </EuiFlexItem>
+                             
                               </EuiFlexGroup>
                           </EuiPanel>
                       </EuiFlexItem>

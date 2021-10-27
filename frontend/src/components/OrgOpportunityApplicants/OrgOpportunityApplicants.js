@@ -15,7 +15,8 @@ import {
   EuiFlexGroup,
   EuiAvatar,
   EuiButtonIcon,
-  EuiCard
+  EuiCard,
+  EuiTitle
 } from "@elastic/eui"
 import { OrgOpportunityViewCard, NotFoundPage, OpportunityHome } from "../../components"
 import { useParams } from "react-router-dom"
@@ -32,12 +33,6 @@ const CardContainer = styled.div`
   width: 85vw;
   padding: 10px;
 `
-// const timeout = document.getElementsByClassName('showApplicant')
-// setTimeout(hideElement, 100) //milliseconds until timeout//
-// function hideElement() {
-//     console.log("CUH")
-// }
-
 
 function OrgOpportunityApplicants({
   isLoading,
@@ -98,22 +93,25 @@ function OrgOpportunityApplicants({
         <EuiPageContent verticalPosition="center" horizontalPosition="center" paddingSize="none">
           <EuiPageContentBody>
             <CardContainer>
+              
+              <EuiFlexGroup justifyContent="spaceAround">
+                <EuiFlexItem grow={false}>
+                  <EuiText><h3>Applicants</h3></EuiText>
+                </EuiFlexItem>
+                </EuiFlexGroup>
             <EuiFlexGroup >
                 <EuiFlexItem grow={3}>
                     <EuiPanel>
                         <EuiFlexGroup justifyContent="spaceBetween">
                         <EuiFlexItem grow={false}>
                             <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1" onClick={handleClick}>My Opportunities</EuiButton>
-                        </EuiFlexItem>
-                        <EuiFlexItem grow={false}>
-                            <EuiButton>Switch to Volunteer View</EuiButton>
-                        </EuiFlexItem>
+                        </EuiFlexItem>           
                         </EuiFlexGroup>
                     </EuiPanel>
                 </EuiFlexItem>
                 </EuiFlexGroup>
                 <EuiFlexGroup>
-                    <EuiFlexItem grow={3}>
+                    <EuiFlexItem grow={10}>
                             <EuiFlexGroup direction="column">
                                 <EuiFlexItem>
                                     <EuiPanel className="showApplicant">
@@ -152,25 +150,7 @@ function OrgOpportunityApplicants({
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                     </EuiFlexItem>
-                    <EuiFlexItem alignItems="spaceAround"> 
-                    <EuiPanel paddingSize="l" alignItems="spaceAround">
-                        <EuiFlexGrid columns={1}>
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                        <EuiText padding="5px" textAlign="center">Manage This Opportunity</EuiText>
-                        
-                        </EuiFlexItem> 
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                            <EuiButton href="/opportunities/org/1/applicants">View Applicants</EuiButton>
-                        
-                        </EuiFlexItem> 
-                        <EuiFlexItem alignItems="spaceAround" justifyContent="spaceBetween"> 
-                            <EuiButton>Edit Item</EuiButton>
-                        
-                        </EuiFlexItem> 
-                        </EuiFlexGrid>
                     
-                    </EuiPanel>
-                    </EuiFlexItem>
                 </EuiFlexGroup>
                
             </CardContainer>

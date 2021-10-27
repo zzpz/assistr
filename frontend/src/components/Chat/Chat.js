@@ -148,9 +148,7 @@ class Chat extends Component {
                               <EuiFlexItem grow={false}>
                                   <EuiButton iconType="arrowLeft" href="/profile/myopportunities" >My Opportunities</EuiButton>
                               </EuiFlexItem>
-                              <EuiFlexItem grow={false}>
-                                  <EuiButton>Switch to Volunteer View</EuiButton>
-                              </EuiFlexItem>
+                              
                               </EuiFlexGroup>
                           </EuiPanel>
                       </EuiFlexItem>
