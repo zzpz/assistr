@@ -1,6 +1,6 @@
 import React from "react"
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete"
-import GoogleMapReact from 'google-map-react';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
 
 import {
   EuiHorizontalRule,
@@ -21,6 +21,7 @@ import {
 } from "@elastic/eui"
 import styled from "styled-components"
 import moment from "moment"
+import koala from '../../assets/img/koala.jpg'
 
 const ImageHolder = styled.div`
   min-width: 400px;
@@ -65,8 +66,8 @@ export default function OrgOpportunityViewCard({ post, user}) {
 
   const setLatLong = async () => {
 
-    let result = await geocodeByAddress('Tokyo, Japan')
-    .then(results => getLatLng(results[0]))
+    let result = await geocodeByAddress(post.location)
+    .then(result => getLatLng(result[0]))
     .then(({ lat, lng }) => setAddress({ lat, lng }));
   }
   setLatLong()
@@ -80,6 +81,15 @@ export default function OrgOpportunityViewCard({ post, user}) {
     lng: latLong.lng,
   }
 
+  const MyMapComponent = withScriptjs(withGoogleMap((props) =>
+  <GoogleMap
+    defaultZoom={11}
+    defaultCenter={{ lat: latLong.lat, lng: latLong.lng }}
+  >
+    {props.isMarkerShown && <Marker position={{ lat: latLong.lat, lng: latLong.lng }} />}
+  </GoogleMap>
+))
+
 
   return (
     <CardContainer>
@@ -89,12 +99,12 @@ export default function OrgOpportunityViewCard({ post, user}) {
           <EuiPanel>
             <EuiFlexGroup justifyContent="spaceBetween">
               <EuiFlexItem grow={false}>
-                <EuiButton iconType="arrowLeft" href="/org-profile/created0pportunities">My Opportunities</EuiButton>
+                <EuiButton iconType="arrowLeft" href="/org-profile/CreatedOpportunities/num=1">My Opportunities</EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton>Switch to Volunteer View</EuiButton>
               </EuiFlexItem>
-          </EuiFlexGroup>
+            </EuiFlexGroup>
           </EuiPanel>
        
        
@@ -108,7 +118,7 @@ export default function OrgOpportunityViewCard({ post, user}) {
                       image={
                         <div>
                           <img
-                            src="http://172.19.0.4:8080/1,01d2a24f1e"
+                            src={koala}
                           />
                         </div>
                       }
@@ -138,7 +148,14 @@ export default function OrgOpportunityViewCard({ post, user}) {
              <EuiFlexItem><EuiPanel>{title}</EuiPanel></EuiFlexItem>
              <EuiFlexItem>
                <EuiPanel>
-                 <GoogleMapReact
+               <MyMapComponent
+                  isMarkerShown
+                  googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                  loadingElement={<div style={{ height: `100%` }} />}
+                  containerElement={<div style={{ height: `400px` }} />}
+                  mapElement={<div style={{ height: `100%` }} />}
+                />
+                 {/* <GoogleMapReact
                     bootstrapURLKeys={{ key: "AIzaSyAmn1Hymc4MuHy1zyvQsnTz64Jl-BFOTaQ" }}
                     defaultCenter={defaultProps.center}
                     defaultZoom={defaultProps.zoom}
@@ -148,7 +165,7 @@ export default function OrgOpportunityViewCard({ post, user}) {
                     lng={139.6503106}
                     text="My Marker"
                   />  
-                </GoogleMapReact>
+                </GoogleMapReact> */}
         </EuiPanel>
         </EuiFlexItem>
         </EuiFlexGroup>

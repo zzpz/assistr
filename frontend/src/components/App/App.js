@@ -18,7 +18,11 @@ import {
   Org0pportunities,
   Org0pportunitiesStatic,
   Chat,
-  ChatOrg
+  ChatOrg,
+  MyOpportunities,
+  Saved,
+  VolunteerProfileView,
+  OrgProfileView
 } from "../../components"
 
 export default function App() {
@@ -34,7 +38,9 @@ export default function App() {
               element={<OpportunityPage/>}
             />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />  
+          <Route path="/profile/saved" element = {<Saved />} />          
+          <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />
+          <Route path="/profile/myopportunities" element={<MyOpportunities />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/registration/org" element={<OrgRegistrationPage />} />
           <Route
@@ -44,7 +50,10 @@ export default function App() {
           <Route path="/org-profile" element={<OrgProfilePage />} />
           <Route path="/org-profile/CreatedOpportunities/num=1" element={<Org0pportunitiesStatic />} />
           <Route path="/org-profile/createdOpportunities" element={<OrgOpportunities />} />
-          <Route path="/org-profile/created0pportunities" element={<Org0pportunities />} />
+          <Route path="/profiles/view/2" element={<VolunteerProfileView />} />
+          <Route path="/profiles/view/1" element={<OrgProfileView />} />
+
+          {/* <Route path="/org-profile/created0pportunities" element={<Org0pportunities />} /> */}
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

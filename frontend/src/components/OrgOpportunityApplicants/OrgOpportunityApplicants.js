@@ -14,11 +14,13 @@ import {
   EuiPanel,
   EuiFlexGroup,
   EuiAvatar,
-  EuiButtonIcon
+  EuiButtonIcon,
+  EuiCard
 } from "@elastic/eui"
 import { OrgOpportunityViewCard, NotFoundPage, OpportunityHome } from "../../components"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import axios from 'axios'
 
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -46,11 +48,29 @@ function OrgOpportunityApplicants({
 }) {
   const { opportunity_id } = useParams()
   const [show, setShow] = React.useState(true)
+  const [volunteer, setVolunteer] = React.useState("")
+  const [acceptFilled, setAccept] = React.useState(false)
+
+  const getUserData = async () => {
+    try {
+        const {data} = await axios.get('http://localhost:8000/api/profiles/2');
+        setVolunteer(data)
+        return data;
+    } catch (err) {
+        console.log(err.message);
+    }
+  }
+
+  
 
   React.useEffect(() => {
     if (opportunity_id) {
       fetchPostById({ opportunity_id })
     }
+
+    const vol = getUserData();
+    // setVolunteer(vol)
+    console.log(volunteer)
 
     return () => clearCurrentOpportunity()
   }, [opportunity_id, fetchPostById, clearCurrentOpportunity])
@@ -64,6 +84,11 @@ function OrgOpportunityApplicants({
   const handleClick = () => {
     localStorage.setItem("visited_applicants", "true");
   }
+
+  
+
+  // const vol = getUserData();
+  // setVolunteer(vol)
 
   if (localStorage.getItem("visited_applicants") == "true") {
 
@@ -93,17 +118,32 @@ function OrgOpportunityApplicants({
                                 <EuiFlexItem>
                                     <EuiPanel className="showApplicant">
                                         <EuiFlexGroup alignItems="center">
-                                            <EuiFlexItem>
-                                                <EuiAvatar
-                                                    size="xl"
-                                                    name={"Anonymous"}
-                                                    initialsLength={2}/>
+                                            <EuiFlexItem >
+                                                <EuiCard href="/profiles/view/2">
+                                                <EuiFlexGrid  columns={1}>
+                                                  <EuiFlexGroup alignItems="center" direction="column">
+                                                    <EuiFlexItem>
+                                                      <EuiAvatar
+                                                        size="l"
+                                                        name={""}
+                                                        initialsLength={2}/>
+                                                        </EuiFlexItem>
+                                                        <EuiFlexItem>
+                                                          <EuiText>{volunteer.first}</EuiText>
+                                                        </EuiFlexItem>
+                                                    </EuiFlexGroup> 
+                                                </EuiFlexGrid>
+                                                </EuiCard>
+                                                
                                             </EuiFlexItem>
                                             <EuiFlexItem>
-                                                <EuiButtonIcon display="base" size="l" iconType="user" />
+                                                <EuiButtonIcon display="base"  href="/org/chat" size="xl" iconType="https://img.icons8.com/color/96/000000/chat.png" />
                                             </EuiFlexItem>
                                             <EuiFlexItem>
-                                                <EuiButtonIcon display="base" size="l" iconType="check" />
+                                                <EuiButtonIcon isSelected={acceptFilled} display={acceptFilled ? 'fill': 'base'} fullWidth onClick={() => {setAccept((isOn) => !isOn);}} display="base" size="l" iconType="check" />
+                                            </EuiFlexItem>
+                                            <EuiFlexItem>
+                                                <EuiButtonIcon color="danger" display="base" size="l" iconType="cross" />
                                             </EuiFlexItem>
                                         </EuiFlexGroup>
                                     </EuiPanel>

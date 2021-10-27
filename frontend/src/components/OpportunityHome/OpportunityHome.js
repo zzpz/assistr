@@ -18,7 +18,9 @@ import {
 } from "@elastic/eui"
 import { OpportunityCreateForm } from ".."
 import styled from "styled-components"
-// import { EuiFieldText } from "@elastic/eui/src/components/form/field_text/field_text"
+import koala from '../../assets/img/koala.jpg'
+import buddiesDay from '../../assets/img/buddiesDay.jpg'
+
 import { OrgOpportunityViewCard, NotFoundPage } from "../../components"
 
 
@@ -40,8 +42,7 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
 
 const CardContainer = styled.div`
   width: 85vw;
-  height: 50vh;
-  padding: 10px;
+  padding: 20px;
 `
 
 function OpportunityHome({ user }) {
@@ -54,12 +55,14 @@ function OpportunityHome({ user }) {
               <EuiFlexGroup justifyContent="spaceAround">
                 <EuiFlexItem grow={1} style={{ maxWidth: 300 }}>
                   <EuiCard
+                        href="opportunities/1"
                         textAlign="left"
                         image={
                           <div>
                             <img
-                              src="http://172.19.0.4:8080/1,01d2a24f1e"
-                            />
+                                src={koala}
+                                alt="Nature"
+                                />
                           </div>
                         }
                         title="Bloom Festival"
@@ -74,14 +77,16 @@ function OpportunityHome({ user }) {
                   />
 
                 </EuiFlexItem>
-                <EuiFlexItem href="/" grow={1} style={{ maxWidth: 300 }}>
+                <EuiFlexItem grow={1} style={{ maxWidth: 300 }}>
                   <EuiCard
+                        href="opportunities/1"
                         textAlign="left"
                         image={
                           <div>
                             <img
-                              src="http://172.19.0.4:8080/1,01d2a24f1e"
-                            />
+                                src={buddiesDay}
+                                alt="Nature"
+                                />
                           </div>
                         }
                         title="Buddies Day"
@@ -98,12 +103,14 @@ function OpportunityHome({ user }) {
                 </EuiFlexItem>
                 <EuiFlexItem grow={1} style={{ maxWidth: 300 }}>
                   <EuiCard
+                        href="opportunities/1"
                         textAlign="left"
                         image={
                           <div>
                             <img
-                              src="http://172.19.0.4:8080/1,01d2a24f1e"
-                            />
+                                src={koala}
+                                alt="Nature"
+                                />
                           </div>
                         }
                         title="Feeding Koalas"
@@ -121,9 +128,7 @@ function OpportunityHome({ user }) {
               
               
               </EuiFlexGroup>
-              <EuiFlexGroup>
-
-              </EuiFlexGroup>
+            
 
             </CardContainer>
           </EuiPageContentBody>

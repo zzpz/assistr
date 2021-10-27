@@ -67,7 +67,7 @@ export const Actions = {}
 Actions.clearCurrentOpportunity = () => ({ type: CLEAR_CURRENT_OPPORTUNITY })
 
 
-Actions.createPost = ({ title, short_desc, long_desc, location }) => {
+Actions.createPost = ({ title, short_desc, long_desc, location, image }) => {
     console.log(title)
 
     return async (dispatch) => {
@@ -118,27 +118,30 @@ Actions.fetchPostById = ({ opportunity_id }) => {
   }
 }
 
-// Actions.updateImage = ({ image }) => {
-//   return async (dispatch) => {
-//     dispatch({ type: FETCH_POST_BY_ID })
-//     const token = localStorage.getItem("access_token")
+Actions.updateImage = ({ id, image }) => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_POST_BY_ID })
+    const token = localStorage.getItem("access_token")
 
-//     try {
-//       const res = await axios({
-//         method: `GET`,
-//         url: `http://localhost:8000/api/posts/${ opportunity_id }`,
-//         data: {},
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`
-//         },
-//       })
-//       console.log(res)
-//       return dispatch({ type: FETCH_POST_BY_ID_SUCCESS, data: res.data })
-//     } catch (error) {
-//       console.log(error)
-//       dispatch({ type: FETCH_POST_BY_ID_FAILURE, error })
-//     }
-//   }
-// }
+    console.log("TRYING")
+    console.log(image)
+
+    try {
+      const res = await axios({
+        method: `POST`,
+        url: `http://localhost:8000/api/images/${ id }`,
+        data: image ,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      })
+      console.log(res)
+      return dispatch({ type: FETCH_POST_BY_ID_SUCCESS, data: res.data })
+    } catch (error) {
+      console.log(error)
+      dispatch({ type: FETCH_POST_BY_ID_FAILURE, error })
+    }
+  }
+}
 

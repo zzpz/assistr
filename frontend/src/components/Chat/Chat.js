@@ -1,6 +1,36 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Talk from 'talkjs';
+import axios from 'axios';
+
+import {
+    EuiPage,
+    EuiPageBody,
+    EuiPageContent,
+    EuiPageContentBody,
+    EuiLoadingSpinner,
+    EuiFlexItem,
+    EuiFlexGrid,
+    EuiButton,
+    EuiText,
+    EuiPanel,
+    EuiFlexGroup,
+    EuiAvatar,
+    EuiButtonIcon
+} from "@elastic/eui"
+
+import styled from "styled-components"
+
+const StyledEuiPage = styled(EuiPage)`
+  flex: 1;
+  background: rgb(0,75,103);
+background: linear-gradient(180deg, rgba(0,75,103,1) 21%, rgba(36,127,155,1) 74%, rgba(78,187,216,1) 99%);
+`
+
+const CardContainer = styled.div`
+  width: 85vw;
+  padding: 10px;
+  `
 
 class Chat extends Component {
 
@@ -8,25 +38,68 @@ class Chat extends Component {
         super(props);
         
         this.inbox = undefined;
+
+        this.state = {
+            org: {
+                data: {}
+            },
+            volunteer: {
+                data: {}
+            }
+        }
     }
 
-    componentDidMount() {
+    getOrgData = async () => {
+        try {
+            const {data} = await axios.get('http://localhost:8000/api/profiles/1');
+            return data;
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+
+    getUserData = async () => {
+        try {
+            const {data} = await axios.get('http://localhost:8000/api/profiles/2');
+            return data;
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+
+    
+
+    async componentDidMount() {
+        const orgData = await this.getOrgData();
+        const userData = await this.getUserData();
+        this.setState(
+            {org: {
+                data: orgData
+            },
+            volunteer: {
+                data: userData
+            }
+        }
+        );
+
+    
+        console.log()
+
         // Promise can be `then`ed multiple times
         Talk.ready
             .then(() => {
                 const me = new Talk.User({
                     id: "12345231",
-                    name: "Volunteer",
-                    email: "george@looney.net",
+                    name: this.state.volunteer.data.first,
+                    email: "hi@looney.net",
                     photoUrl: "https://talkjs.com/docs/img/george.jpg",
-                    welcomeMessage: "Hey there! How are you? :-)"
+                    // welcomeMessage: "Hey there! How are you? :-)"
                 });
                 const other = new Talk.User({
                     id: "54321",
-                    name: "Organisation",
-                    email: "ronald@teflon.com",
+                    name: this.state.org.data.org_name,
+                    email: "lo@teflon.com",
                     photoUrl: "https://talkjs.com/docs/img/ronald.jpg",
-                    welcomeMessage: "Hey there! Love to chat :-)"
                 });
 
                 if (!window.talkSession) {
@@ -62,9 +135,52 @@ class Chat extends Component {
     }
 
     render() {
-        return (<span>
-            <div style={{height: '500px'}} ref={c => this.container = c}>Loading...</div>
-        </span>);
+        return (
+            <StyledEuiPage>
+            <EuiPageBody component="section">
+              <EuiPageContent verticalPosition="center" horizontalPosition="center" paddingSize="none">
+                <EuiPageContentBody>
+                  <CardContainer>
+                  <EuiFlexGroup >
+                      <EuiFlexItem grow={3}>
+                          <EuiPanel>
+                              <EuiFlexGroup justifyContent="spaceBetween">
+                              <EuiFlexItem grow={false}>
+                                  <EuiButton iconType="arrowLeft" href="/profile/myopportunities" >My Opportunities</EuiButton>
+                              </EuiFlexItem>
+                              <EuiFlexItem grow={false}>
+                                  <EuiButton>Switch to Volunteer View</EuiButton>
+                              </EuiFlexItem>
+                              </EuiFlexGroup>
+                          </EuiPanel>
+                      </EuiFlexItem>
+                      </EuiFlexGroup>
+                      <EuiFlexGroup>
+                          <EuiFlexItem grow={3}>
+                                  <EuiFlexGroup direction="column">
+                                      <EuiFlexItem>
+                                        <span>
+                                          <div style={{height: '500px'}} ref={c => this.container = c}>Loading...</div>
+                                        </span>
+                                          
+                                      </EuiFlexItem>
+                                      <EuiFlexItem>
+                                      </EuiFlexItem>
+                                  </EuiFlexGroup>
+                          </EuiFlexItem>
+                         
+                      </EuiFlexGroup>
+                     
+                  </CardContainer>
+      
+                </EuiPageContentBody>
+              </EuiPageContent>
+            </EuiPageBody>
+          </StyledEuiPage>
+        
+            );
+            
+
     }
 }
 
