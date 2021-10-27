@@ -8,7 +8,6 @@ import {
   NotFoundPage, 
   ProfilePage, 
   ProtectedRoute,
-  OrgRoute,
   RegistrationPage,
   OrgRegistrationPage,
   OrgProfileEdit,
