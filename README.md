@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # assistr #
 A web-app to help volunteers and organisations find each other
 
@@ -51,5 +50,3 @@ This app requires the use of Google API Key for the following API's:
 ### Testing ###
 1. Tested on Google Chrome, Firefox, Safari, Edge.
 =======
-# assistr
->>>>>>> 88d31a7a759ef081925a6b74348547a3b94c14aa
